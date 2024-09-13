@@ -12,7 +12,6 @@ import Combine
 final class ARCoordinator: NSObject, ARSessionDelegate {
     
     private var subscription: Set<AnyCancellable> = []
-    let sphereEntitiesManager = SphereEntitiesManager()
     
     weak var arView: ARView?
     private var currentStroke: Stroke?
@@ -36,7 +35,7 @@ final class ARCoordinator: NSObject, ARSessionDelegate {
             break
         }
     }
-
+    
     func session(_ session: ARSession, didUpdate frame: ARFrame) {
     }
     
@@ -51,17 +50,18 @@ final class ARCoordinator: NSObject, ARSessionDelegate {
     private func updateStroke(at location: CGPoint) {
         guard let arView = self.arView,
               let targetPosition = getPosition(ofPoint: location, atDistanceFromCamera: 0.2, inView: arView),
-              let currentStroke = currentStroke else { return }
+              let currentStroke = currentStroke,
+                let previousPosition = previousPosition else { return }
         
-        let distance = distance(targetPosition, previousPosition ?? targetPosition)
-        if distance > 0.005 {
+        let distance = distance(targetPosition, previousPosition)
+        if distance > 0.001 {
             currentStroke.updateStroke(at: targetPosition)
             updateMesh()
         }
+        self.previousPosition = targetPosition
     }
     
     private func finishStroke() {
-        updateMesh()
         if let currentStroke{
             document.append(currentStroke)
         }
@@ -70,19 +70,18 @@ final class ARCoordinator: NSObject, ARSessionDelegate {
     }
     
     private func updateMesh() {
-         guard let currentStroke = currentStroke,
-               currentStroke.points.count >= 2 else { return }
-         
-         currentStroke.anchor.children.removeAll()
-         
-        guard let mesh = currentStroke.generateTubeMesh(from: currentStroke.points, radius: 0.005, segments: 8) else {
-             print("Failed to generate mesh")
-             return
-         }
-         
-         let entity = ModelEntity(mesh: mesh, materials: [UnlitMaterial(color: .white)])
-        currentStroke.anchor.addChild(entity, preservingWorldTransform: true)
-     }
+        guard let currentStroke = currentStroke else { return }
+        
+        currentStroke.anchor.children.removeAll()
+        
+        do{
+            let entity = try currentStroke.generateStrokeEntity()
+            currentStroke.anchor.addChild(entity, preservingWorldTransform: true)
+        }catch {
+            print("Failed to generate mesh: \(error.localizedDescription)")
+            return
+        }
+    }
     
-
+    
 }

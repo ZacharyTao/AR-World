@@ -9,7 +9,6 @@ import SwiftUI
 
 class ARViewModel: ObservableObject {
     @Published var isRelocalizingWorldMap = false
-    private var currentColor: StrokeColor = .white
     @Published var currentTapPosition: CGPoint = .zero
     
     func undo() {
