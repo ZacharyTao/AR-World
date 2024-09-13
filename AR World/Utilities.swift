@@ -8,9 +8,6 @@
 import ARKit
 import RealityKit
 
-import ARKit
-import RealityKit
-
 // Get the current position of the camera in ARView
 func getCameraPosition(in view: ARView) -> SIMD3<Float>? {
     guard let lastFrame = view.session.currentFrame else {
