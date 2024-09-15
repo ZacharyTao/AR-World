@@ -84,11 +84,3 @@ func getPositionsOnLineBetween(point1: SIMD3<Float>,
     }
     return positions
 }
-
-class ImmediatePanGesture: UIPanGestureRecognizer {
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent) {
-        if self.state == .began { return }
-        super.touchesBegan(touches, with: event)
-        state = .began
-    }
-}

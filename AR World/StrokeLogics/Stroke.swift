@@ -25,10 +25,10 @@ class Stroke{
         points.append(position)
     }
     
-    func generateStrokeEntity(segments: Int = 8) throws -> Entity{
+    func generateStrokeEntity(segments: Int = 8) throws -> ModelEntity{
         let tubeMaterial = UnlitMaterial(color: color)
-        if points.count <= 4{
-            return ModelEntity(mesh: .generateSphere(radius: radius), materials: [tubeMaterial])
+        if points.count <= 3{
+            return ModelEntity()
         }
         
         let tubeMesh = try generateTubeMesh(segments: segments)
@@ -38,12 +38,12 @@ class Stroke{
         let endSphereMesh = MeshResource.generateSphere(radius: radius)
         
         let startSphereEntity = ModelEntity(mesh: startSphereMesh, materials: [tubeMaterial])
-        startSphereEntity.position = points[0]
+        startSphereEntity.position = points.first!
         
         let endSphereEntity = ModelEntity(mesh: endSphereMesh, materials: [tubeMaterial])
-        endSphereEntity.position = points[points.endIndex - 1]
+        endSphereEntity.position = points.last!
         
-        let parentEntity = Entity()
+        let parentEntity = ModelEntity()
         parentEntity.addChild(tubeEntity)
         parentEntity.addChild(startSphereEntity)
         parentEntity.addChild(endSphereEntity)

@@ -12,23 +12,27 @@ import ARKit
 extension ARMainView{
     struct ARViewContainer: UIViewRepresentable {
         func makeUIView(context: Context) -> ARView {
-            let arView = ARView(frame: .zero)
-            arView.addGestureRecognizer(ImmediatePanGesture(target: context.coordinator, action: #selector(ARCoordinator.didPanItem(panGesture:))))
+            let customARView = CustomARView()
+            customARView.renderOptions.insert([.disableHDR, .disableGroundingShadows, .disableAREnvironmentLighting, .disableDepthOfField, .disableCameraGrain, .disableMotionBlur, .disableAREnvironmentLighting])
+            //customARView.environment.sceneUnderstanding.options.insert(.occlusion)
+            let config = ARWorldTrackingConfiguration()
+            //let handConfig = ARBodyTrackingConfiguration()
+            if type(of: config).supportsFrameSemantics(.sceneDepth) {
+                config.frameSemantics = .personSegmentationWithDepth
+            } else {
+                print("This device doesn't support segmentation with depth")
+            }
+            customARView.session.run(config)
 
-            context.coordinator.arView = arView
-            arView.session.delegate = context.coordinator
-            arView.renderOptions.insert([.disableHDR, .disableGroundingShadows, .disableAREnvironmentLighting, .disableDepthOfField, .disableCameraGrain, .disableMotionBlur, .disableAREnvironmentLighting])
+            
 
-            return arView
+            return customARView
+
+
         }
         
         func updateUIView(_ uiView: ARView, context: Context) {
         }
-    
-        
-        func makeCoordinator() -> ARCoordinator {
-            ARCoordinator()
-        }
-        
     }
 }
+

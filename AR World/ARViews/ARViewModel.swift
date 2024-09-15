@@ -8,8 +8,6 @@ import RealityKit
 import SwiftUI
 
 class ARViewModel: ObservableObject {
-    @Published var isRelocalizingWorldMap = false
-    @Published var currentTapPosition: CGPoint = .zero
     
     func undo() {
     }

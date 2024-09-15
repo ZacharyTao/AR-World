@@ -7,17 +7,18 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		EF1C0EA82C94FB2F0018D16C /* CustomARView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF1C0EA72C94FB2F0018D16C /* CustomARView.swift */; };
 		EF2EC9CC2C8CE646004CF8FD /* ARWorldApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF2EC9CB2C8CE646004CF8FD /* ARWorldApp.swift */; };
 		EF2EC9CE2C8CE646004CF8FD /* ARMainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF2EC9CD2C8CE646004CF8FD /* ARMainView.swift */; };
 		EF2EC9D02C8CE646004CF8FD /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EF2EC9CF2C8CE646004CF8FD /* Assets.xcassets */; };
 		EF2EC9DA2C8CE695004CF8FD /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF2EC9D92C8CE695004CF8FD /* Utilities.swift */; };
 		EF2EC9E02C8CF457004CF8FD /* ARViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF2EC9DF2C8CF457004CF8FD /* ARViewModel.swift */; };
 		EF2EC9E62C8FA5F2004CF8FD /* Stroke.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF2EC9E52C8FA5F2004CF8FD /* Stroke.swift */; };
-		EF2ECA042C90AF62004CF8FD /* ARCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF2ECA032C90AF62004CF8FD /* ARCoordinator.swift */; };
 		EF2ECA082C90B09F004CF8FD /* ARViewContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF2ECA072C90B09F004CF8FD /* ARViewContainer.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		EF1C0EA72C94FB2F0018D16C /* CustomARView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomARView.swift; sourceTree = "<group>"; };
 		EF2EC9C82C8CE646004CF8FD /* AR World.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "AR World.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		EF2EC9CB2C8CE646004CF8FD /* ARWorldApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARWorldApp.swift; sourceTree = "<group>"; };
 		EF2EC9CD2C8CE646004CF8FD /* ARMainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARMainView.swift; sourceTree = "<group>"; };
@@ -25,7 +26,6 @@
 		EF2EC9D92C8CE695004CF8FD /* Utilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utilities.swift; sourceTree = "<group>"; };
 		EF2EC9DF2C8CF457004CF8FD /* ARViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARViewModel.swift; sourceTree = "<group>"; };
 		EF2EC9E52C8FA5F2004CF8FD /* Stroke.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Stroke.swift; sourceTree = "<group>"; };
-		EF2ECA032C90AF62004CF8FD /* ARCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARCoordinator.swift; sourceTree = "<group>"; };
 		EF2ECA072C90B09F004CF8FD /* ARViewContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARViewContainer.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -72,9 +72,9 @@
 			isa = PBXGroup;
 			children = (
 				EF2EC9CD2C8CE646004CF8FD /* ARMainView.swift */,
-				EF2ECA032C90AF62004CF8FD /* ARCoordinator.swift */,
 				EF2EC9DF2C8CF457004CF8FD /* ARViewModel.swift */,
 				EF2ECA072C90B09F004CF8FD /* ARViewContainer.swift */,
+				EF1C0EA72C94FB2F0018D16C /* CustomARView.swift */,
 			);
 			path = ARViews;
 			sourceTree = "<group>";
@@ -161,8 +161,8 @@
 				EF2EC9CE2C8CE646004CF8FD /* ARMainView.swift in Sources */,
 				EF2EC9E02C8CF457004CF8FD /* ARViewModel.swift in Sources */,
 				EF2EC9CC2C8CE646004CF8FD /* ARWorldApp.swift in Sources */,
+				EF1C0EA82C94FB2F0018D16C /* CustomARView.swift in Sources */,
 				EF2EC9E62C8FA5F2004CF8FD /* Stroke.swift in Sources */,
-				EF2ECA042C90AF62004CF8FD /* ARCoordinator.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

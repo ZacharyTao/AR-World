@@ -1,57 +1,50 @@
 //
-//  ARCoordinator.swift
+//  CustomARView.swift
 //  AR World
 //
-//  Created by Zachary Tao on 9/10/24.
+//  Created by Zachary Tao on 9/13/24.
 //
 
-import ARKit
 import RealityKit
-import Combine
+import SwiftUI
 
-final class ARCoordinator: NSObject, ARSessionDelegate {
-    
-    private var subscription: Set<AnyCancellable> = []
-    
-    weak var arView: ARView?
+class CustomARView: ARView{
     private var currentStroke: Stroke?
     private var previousPosition: SIMD3<Float>?
     var document : [Stroke] = []
     
-    override init() {
-        super.init()
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        guard let touch = touches.first else { return }
+        let location = touch.location(in: self)
+        startNewStroke(at: location)
     }
     
-    @objc func didPanItem(panGesture: ImmediatePanGesture) {
-        guard let arView = self.arView else { return }
-        
-        switch panGesture.state {
-        case .began:
-            startNewStroke(at: panGesture.location(in: arView))
-        case .changed:
-            updateStroke(at: panGesture.location(in: arView))
-        default:
-            finishStroke()
-            break
-        }
+    override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
+        guard let touch = touches.first else { return }
+        let location = touch.location(in: self)
+        updateStroke(at: location)
     }
     
-    func session(_ session: ARSession, didUpdate frame: ARFrame) {
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        finishStroke()
+    }
+    
+    override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
+        finishStroke()
     }
     
     private func startNewStroke(at location: CGPoint) {
-        guard let arView = self.arView,
-              let targetPosition = getPosition(ofPoint: location, atDistanceFromCamera: 0.2, inView: arView) else { return }
+        guard let targetPosition = getPosition(ofPoint: location, atDistanceFromCamera: 0.2, inView: self) else { return }
         previousPosition = targetPosition
         currentStroke = Stroke(at: targetPosition)
-        arView.scene.addAnchor(currentStroke!.anchor)
+
+        scene.addAnchor(currentStroke!.anchor)
     }
     
     private func updateStroke(at location: CGPoint) {
-        guard let arView = self.arView,
-              let targetPosition = getPosition(ofPoint: location, atDistanceFromCamera: 0.2, inView: arView),
+        guard let targetPosition = getPosition(ofPoint: location, atDistanceFromCamera: 0.2, inView: self),
               let currentStroke = currentStroke,
-                let previousPosition = previousPosition else { return }
+              let previousPosition = previousPosition else { return }
         
         let distance = distance(targetPosition, previousPosition)
         if distance > 0.001 {
@@ -77,11 +70,11 @@ final class ARCoordinator: NSObject, ARSessionDelegate {
         do{
             let entity = try currentStroke.generateStrokeEntity()
             currentStroke.anchor.addChild(entity, preservingWorldTransform: true)
+
         }catch {
             print("Failed to generate mesh: \(error.localizedDescription)")
             return
         }
     }
-    
-    
 }
+
