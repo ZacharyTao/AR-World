@@ -8,15 +8,20 @@
 import RealityKit
 import SwiftUI
 
-class CustomARView: ARView{
+class CustomARView: ARView, ObservableObject{
     private var currentStroke: Stroke?
     private var previousPosition: SIMD3<Float>?
+    @Published var isDrawing = false
+    var selectedColor: Color = .white
+    var selectedRadius: BrushRadius = .thin
     var document : [Stroke] = []
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         guard let touch = touches.first else { return }
         let location = touch.location(in: self)
         startNewStroke(at: location)
+        UIImpactFeedbackGenerator(style: .light).impactOccurred()
+        isDrawing = true
     }
     
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -27,16 +32,20 @@ class CustomARView: ARView{
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         finishStroke()
+        UIImpactFeedbackGenerator(style: .light).impactOccurred()
+        isDrawing = false
     }
     
     override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
         finishStroke()
+        UIImpactFeedbackGenerator(style: .light).impactOccurred()
+        isDrawing = false
     }
     
     private func startNewStroke(at location: CGPoint) {
         guard let targetPosition = getPosition(ofPoint: location, atDistanceFromCamera: 0.2, inView: self) else { return }
         previousPosition = targetPosition
-        currentStroke = Stroke(at: targetPosition)
+        currentStroke = Stroke(color: UIColor(selectedColor), at: targetPosition, radius: selectedRadius.rawValue)
 
         scene.addAnchor(currentStroke!.anchor)
     }
@@ -76,5 +85,11 @@ class CustomARView: ARView{
             return
         }
     }
+    
+    func undoLastStroke() {
+        guard let lastStroke = document.popLast() else { return }
+        lastStroke.anchor.removeFromParent()
+    }
+
 }
 

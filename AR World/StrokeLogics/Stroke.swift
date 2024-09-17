@@ -15,7 +15,7 @@ class Stroke{
     var points: [SIMD3<Float>] = []
     
     
-    init(color: UIColor = .white, at position: SIMD3<Float>, radius: Float = 0.005) {
+    init(color: UIColor, at position: SIMD3<Float>, radius: Float) {
         self.color = color
         self.anchor = AnchorEntity(world: position)
         self.radius = radius

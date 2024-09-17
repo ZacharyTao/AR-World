@@ -9,30 +9,27 @@ import SwiftUI
 import RealityKit
 import ARKit
 
-extension ARMainView{
-    struct ARViewContainer: UIViewRepresentable {
-        func makeUIView(context: Context) -> ARView {
-            let customARView = CustomARView()
-            customARView.renderOptions.insert([.disableHDR, .disableGroundingShadows, .disableAREnvironmentLighting, .disableDepthOfField, .disableCameraGrain, .disableMotionBlur, .disableAREnvironmentLighting])
-            //customARView.environment.sceneUnderstanding.options.insert(.occlusion)
-            let config = ARWorldTrackingConfiguration()
-            //let handConfig = ARBodyTrackingConfiguration()
-            if type(of: config).supportsFrameSemantics(.sceneDepth) {
-                config.frameSemantics = .personSegmentationWithDepth
-            } else {
-                print("This device doesn't support segmentation with depth")
-            }
-            customARView.session.run(config)
-
-            
-
-            return customARView
-
-
-        }
+struct ARViewContainer: UIViewRepresentable {
+    var customARView: CustomARView
+    func makeUIView(context: Context) -> ARView {
         
-        func updateUIView(_ uiView: ARView, context: Context) {
-        }
+        customARView.renderOptions.insert([.disableHDR, .disableGroundingShadows, .disableAREnvironmentLighting, .disableDepthOfField, .disableCameraGrain, .disableMotionBlur, .disableAREnvironmentLighting])
+        //customARView.environment.sceneUnderstanding.options.insert(.occlusion)
+//        let config = ARWorldTrackingConfiguration()
+//        if type(of: config).supportsFrameSemantics(.sceneDepth) {
+//            config.frameSemantics = .personSegmentationWithDepth
+//        } else {
+//            print("This device doesn't support segmentation with depth")
+//        }
+//        customARView.session.run(config)
+        
+        return customARView
+        
+        
+    }
+    
+    func updateUIView(_ uiView: ARView, context: Context) {
     }
 }
+
 
