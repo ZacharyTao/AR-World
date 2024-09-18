@@ -13,135 +13,58 @@ import ARKit
 struct ARMainView : View {
     @StateObject var customARView = CustomARView()
     @State var isBrushMenuPopover = false
+    @State var screenshotImage: UIImage?
+    @State var showPreview = false
+    @State var hidePreviewWorkItem: DispatchWorkItem?
+    
+    
     
     var body: some View {
-        ZStack{
-            ARViewContainer(customARView: customARView).edgesIgnoringSafeArea(.all)
+        ZStack {
+            ARViewContainer(customARView: customARView)
+                .edgesIgnoringSafeArea(.all)
+            
+            // Main UI Elements
             VStack {
                 Spacer()
                 HStack {
-                    Button{
-                        customARView.undoLastStroke()
-                        UIImpactFeedbackGenerator(style: .rigid).impactOccurred()
-                    }label: {
-                        Image(systemName: "arrow.uturn.backward")
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 25)
-                            .foregroundStyle(.white)
-                            .bold()
-                    }
-                    
+                    UndoButton
                     Spacer()
-                    
-                    
-                    Button{
-                        UIImpactFeedbackGenerator(style: .rigid).impactOccurred()
-                        isBrushMenuPopover.toggle()
-                    }label: {
-                        Image(systemName: "paintbrush.pointed")
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 30)
-                            .foregroundStyle(.white)
-                            .bold()
-                    }.popover(isPresented: $isBrushMenuPopover, attachmentAnchor: .point(.top), arrowEdge: .bottom, content: {
-                        BrushSelectionView
-                            .presentationBackground(.ultraThinMaterial)
-                            .presentationCompactAdaptation(.popover)
-                    })
-                    
+                    BrushSelectionButton
                     Spacer()
-                    
-                    ColorPicker("", selection: $customARView.selectedColor, supportsOpacity: false)
-                        .labelsHidden()
-                        .frame(width: 30)
-                    
+                    ColorPickerButton
                     Spacer()
-                    
-                    Button{
-                        UIImpactFeedbackGenerator(style: .rigid).impactOccurred()
-                        customARView.snapshot(saveToHDR: true){image in
-                            guard let image else { return }
-                            UIImageWriteToSavedPhotosAlbum(image, nil, nil, nil)
-                        }
-                    }label: {
-                        Image(systemName: "camera")
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 30)
-                            .foregroundStyle(.white)
-                            .bold()
-                    }
-                    
+                    CameraButton
                 }
             }
             .padding(.horizontal, 50)
+            
+            // Screenshot Preview
+            ScreenShotPreview
+                .zIndex(1)
+            
+            // Tracking State Message
+            if customARView.cameraTrackingMessageIsShowing {
+                VStack(spacing: 20) {
+                    ProgressView()
+                        .tint(.white)
+                        .scaleEffect(1.2)
+                        .padding(20)
+                    Text(customARView.trackingStateTitleLabel)
+                        .bold()
+                    Text(customARView.trackingStateMessageLabel)
+                        .font(.caption)
+                }
+                .foregroundStyle(.white)
+                .opacity(0.8)
+                .padding()
+                .transition(.opacity)
+                .zIndex(2)
+            }
         }
-    }
-    
-    var BrushSelectionView: some View{
-        HStack(spacing: 5){
-            
-            Button {
-                UIImpactFeedbackGenerator(style: .rigid).impactOccurred()
-                customARView.selectedRadius = .thin
-                isBrushMenuPopover = false
-            } label: {
-                RoundedRectangle(cornerRadius: 10)
-                    .frame(width: 60, height: 60)
-                    .foregroundStyle(.regularMaterial)
-                    .opacity(customARView.selectedRadius == .thin ? 1 : 0)
-                    .overlay{
-                        RoundedRectangle(cornerRadius: 10)
-                            .fill(customARView.selectedColor)
-                            .frame(width: 30, height: 3)
-                    }
-                    .padding(1)
-            }
-            
-            Button {
-                UIImpactFeedbackGenerator(style: .rigid).impactOccurred()
-                customARView.selectedRadius = .medium
-                isBrushMenuPopover = false
-            } label: {
-                RoundedRectangle(cornerRadius: 10)
-                    .frame(width: 60, height: 60)
-                    .foregroundStyle(.regularMaterial)
-                    .opacity(customARView.selectedRadius == .medium ? 1 : 0)
-                    .overlay{
-                        RoundedRectangle(cornerRadius: 10)
-                            .fill(customARView.selectedColor)
-                            .frame(width: 30, height: 6)
-                    }
-                    .padding(1)
-            }
-            
-            Button {
-                UIImpactFeedbackGenerator(style: .rigid).impactOccurred()
-                customARView.selectedRadius = .wide
-                isBrushMenuPopover = false
-            } label: {
-                RoundedRectangle(cornerRadius: 10)
-                    .frame(width: 60, height: 60)
-                    .foregroundStyle(.regularMaterial)
-                    .opacity(customARView.selectedRadius == .wide ? 1 : 0)
-                    .overlay{
-                        RoundedRectangle(cornerRadius: 10)
-                            .fill(customARView.selectedColor)
-                            .frame(width: 30, height: 9)
-                    }
-                    .padding(1)
-            }
-        }.padding(.horizontal, 3)
+        .animation(.bouncy, value: customARView.cameraTrackingMessageIsShowing)
     }
 }
-enum BrushRadius: Float{
-    case thin = 0.005
-    case medium = 0.008
-    case wide = 0.012
-}
-
 
 #Preview {
     ARMainView()

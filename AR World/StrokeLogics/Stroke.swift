@@ -13,34 +13,43 @@ class Stroke{
     let anchor: AnchorEntity
     let radius: Float
     var points: [SIMD3<Float>] = []
+    var material: BrushMaterial
     
     
-    init(color: UIColor, at position: SIMD3<Float>, radius: Float) {
+    init(color: UIColor, at position: SIMD3<Float>, radius: Float, material: BrushMaterial) {
         self.color = color
         self.anchor = AnchorEntity(world: position)
         self.radius = radius
+        self.material = material
     }
     
     func updateStroke(at position: SIMD3<Float>){
         points.append(position)
     }
     
+    @MainActor
     func generateStrokeEntity(segments: Int = 8) throws -> ModelEntity{
-        let tubeMaterial = UnlitMaterial(color: color)
+        let tubeMaterial : Material
+        
+        switch material {
+        case .basic:
+            tubeMaterial = UnlitMaterial(color: color)
+        case .realistic:
+            tubeMaterial = SimpleMaterial(color: color, roughness: 0.8, isMetallic: true)
+        case .metallic:
+            tubeMaterial = SimpleMaterial(color: color, isMetallic: true)
+        }
         if points.count <= 3{
             return ModelEntity()
         }
         
         let tubeMesh = try generateTubeMesh(segments: segments)
         let tubeEntity = ModelEntity(mesh: tubeMesh, materials: [tubeMaterial])
-        
-        let startSphereMesh = MeshResource.generateSphere(radius: radius)
-        let endSphereMesh = MeshResource.generateSphere(radius: radius)
-        
-        let startSphereEntity = ModelEntity(mesh: startSphereMesh, materials: [tubeMaterial])
+                
+        let startSphereEntity = ModelEntity(mesh: .generateSphere(radius: radius), materials: [tubeMaterial])
         startSphereEntity.position = points.first!
         
-        let endSphereEntity = ModelEntity(mesh: endSphereMesh, materials: [tubeMaterial])
+        let endSphereEntity = startSphereEntity.clone(recursive: false)
         endSphereEntity.position = points.last!
         
         let parentEntity = ModelEntity()
@@ -51,7 +60,7 @@ class Stroke{
         return parentEntity
     }
     
-    
+    @MainActor
     func generateTubeMesh(segments: Int) throws -> MeshResource {
         guard points.count >= 2 else { return try MeshResource.generate(from: [])}
         var vertices: [SIMD3<Float>] = []
@@ -103,4 +112,16 @@ class Stroke{
         
     }
     
+}
+
+enum BrushRadius: Float{
+    case thin = 0.002
+    case medium = 0.006
+    case wide = 0.010
+}
+
+enum BrushMaterial{
+    case basic
+    case realistic
+    case metallic
 }

@@ -6,22 +6,26 @@
 //
 
 import RealityKit
+import ARKit
 import SwiftUI
 
 class CustomARView: ARView, ObservableObject{
     private var currentStroke: Stroke?
     private var previousPosition: SIMD3<Float>?
-    @Published var isDrawing = false
     var selectedColor: Color = .white
-    var selectedRadius: BrushRadius = .thin
+    var selectedRadius: BrushRadius = .medium
+    var selectedBrushMaterial: BrushMaterial = .basic
     var document : [Stroke] = []
+    
+    @Published var cameraTrackingMessageIsShowing = false
+    @Published var trackingStateTitleLabel = ""
+    @Published var trackingStateMessageLabel = ""
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         guard let touch = touches.first else { return }
         let location = touch.location(in: self)
         startNewStroke(at: location)
         UIImpactFeedbackGenerator(style: .light).impactOccurred()
-        isDrawing = true
     }
     
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -33,19 +37,17 @@ class CustomARView: ARView, ObservableObject{
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         finishStroke()
         UIImpactFeedbackGenerator(style: .light).impactOccurred()
-        isDrawing = false
     }
     
     override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
         finishStroke()
         UIImpactFeedbackGenerator(style: .light).impactOccurred()
-        isDrawing = false
     }
     
     private func startNewStroke(at location: CGPoint) {
         guard let targetPosition = getPosition(ofPoint: location, atDistanceFromCamera: 0.2, inView: self) else { return }
         previousPosition = targetPosition
-        currentStroke = Stroke(color: UIColor(selectedColor), at: targetPosition, radius: selectedRadius.rawValue)
+        currentStroke = Stroke(color: UIColor(selectedColor), at: targetPosition, radius: selectedRadius.rawValue, material: selectedBrushMaterial)
 
         scene.addAnchor(currentStroke!.anchor)
     }
@@ -71,6 +73,7 @@ class CustomARView: ARView, ObservableObject{
         previousPosition = nil
     }
     
+    @MainActor
     private func updateMesh() {
         guard let currentStroke = currentStroke else { return }
         
@@ -89,6 +92,35 @@ class CustomARView: ARView, ObservableObject{
     func undoLastStroke() {
         guard let lastStroke = document.popLast() else { return }
         lastStroke.anchor.removeFromParent()
+    }
+    
+    func updateCameraTrackingState(for camera: ARCamera) {
+        switch camera.trackingState {
+        case .notAvailable:
+            cameraTrackingMessageIsShowing = false
+            break
+        case .limited(.initializing):
+            // "Initializing AR session."
+            cameraTrackingMessageIsShowing = true
+            trackingStateTitleLabel = "Detecting world"
+            trackingStateMessageLabel = "Move your device around slowly"
+        case .limited(.relocalizing):
+            cameraTrackingMessageIsShowing = true
+            trackingStateTitleLabel = "Relocolizing world"
+            trackingStateMessageLabel = "Move back to the previous location"
+        case .limited(.excessiveMotion):
+            cameraTrackingMessageIsShowing = true
+            trackingStateTitleLabel = "Too much movement"
+            trackingStateMessageLabel = "Move your device more slowly"
+        case .limited(.insufficientFeatures):
+            cameraTrackingMessageIsShowing = true
+            trackingStateTitleLabel = "Not enough detail"
+            trackingStateMessageLabel = "Move around or find a better lit place"
+        case .normal:
+            cameraTrackingMessageIsShowing = false
+        default:
+            cameraTrackingMessageIsShowing = false
+        }
     }
 
 }

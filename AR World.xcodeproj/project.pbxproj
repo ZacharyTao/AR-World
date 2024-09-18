@@ -8,6 +8,10 @@
 
 /* Begin PBXBuildFile section */
 		EF1C0EA82C94FB2F0018D16C /* CustomARView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF1C0EA72C94FB2F0018D16C /* CustomARView.swift */; };
+		EF1C0EAA2C9A31420018D16C /* BrushSelectionButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF1C0EA92C9A31420018D16C /* BrushSelectionButton.swift */; };
+		EF1C0EAD2C9A319C0018D16C /* UndoButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF1C0EAC2C9A319C0018D16C /* UndoButton.swift */; };
+		EF1C0EAF2C9A32360018D16C /* ColorPickerButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF1C0EAE2C9A32360018D16C /* ColorPickerButton.swift */; };
+		EF1C0EB12C9A32680018D16C /* CameraButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF1C0EB02C9A32680018D16C /* CameraButton.swift */; };
 		EF2EC9CC2C8CE646004CF8FD /* ARWorldApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF2EC9CB2C8CE646004CF8FD /* ARWorldApp.swift */; };
 		EF2EC9CE2C8CE646004CF8FD /* ARMainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF2EC9CD2C8CE646004CF8FD /* ARMainView.swift */; };
 		EF2EC9D02C8CE646004CF8FD /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EF2EC9CF2C8CE646004CF8FD /* Assets.xcassets */; };
@@ -19,6 +23,10 @@
 
 /* Begin PBXFileReference section */
 		EF1C0EA72C94FB2F0018D16C /* CustomARView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomARView.swift; sourceTree = "<group>"; };
+		EF1C0EA92C9A31420018D16C /* BrushSelectionButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrushSelectionButton.swift; sourceTree = "<group>"; };
+		EF1C0EAC2C9A319C0018D16C /* UndoButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UndoButton.swift; sourceTree = "<group>"; };
+		EF1C0EAE2C9A32360018D16C /* ColorPickerButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorPickerButton.swift; sourceTree = "<group>"; };
+		EF1C0EB02C9A32680018D16C /* CameraButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraButton.swift; sourceTree = "<group>"; };
 		EF2EC9C82C8CE646004CF8FD /* AR World.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "AR World.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		EF2EC9CB2C8CE646004CF8FD /* ARWorldApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARWorldApp.swift; sourceTree = "<group>"; };
 		EF2EC9CD2C8CE646004CF8FD /* ARMainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARMainView.swift; sourceTree = "<group>"; };
@@ -40,6 +48,17 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		EF1C0EAB2C9A31780018D16C /* ARViewButtons */ = {
+			isa = PBXGroup;
+			children = (
+				EF1C0EA92C9A31420018D16C /* BrushSelectionButton.swift */,
+				EF1C0EAC2C9A319C0018D16C /* UndoButton.swift */,
+				EF1C0EAE2C9A32360018D16C /* ColorPickerButton.swift */,
+				EF1C0EB02C9A32680018D16C /* CameraButton.swift */,
+			);
+			path = ARViewButtons;
+			sourceTree = "<group>";
+		};
 		EF2EC9BF2C8CE646004CF8FD = {
 			isa = PBXGroup;
 			children = (
@@ -71,6 +90,7 @@
 		EF2ECA052C90AF93004CF8FD /* ARViews */ = {
 			isa = PBXGroup;
 			children = (
+				EF1C0EAB2C9A31780018D16C /* ARViewButtons */,
 				EF2EC9CD2C8CE646004CF8FD /* ARMainView.swift */,
 				EF2EC9DF2C8CF457004CF8FD /* ARViewModel.swift */,
 				EF2ECA072C90B09F004CF8FD /* ARViewContainer.swift */,
@@ -156,13 +176,17 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EF1C0EAA2C9A31420018D16C /* BrushSelectionButton.swift in Sources */,
 				EF2EC9DA2C8CE695004CF8FD /* Utilities.swift in Sources */,
+				EF1C0EB12C9A32680018D16C /* CameraButton.swift in Sources */,
 				EF2ECA082C90B09F004CF8FD /* ARViewContainer.swift in Sources */,
+				EF1C0EAD2C9A319C0018D16C /* UndoButton.swift in Sources */,
 				EF2EC9CE2C8CE646004CF8FD /* ARMainView.swift in Sources */,
 				EF2EC9E02C8CF457004CF8FD /* ARViewModel.swift in Sources */,
 				EF2EC9CC2C8CE646004CF8FD /* ARWorldApp.swift in Sources */,
 				EF1C0EA82C94FB2F0018D16C /* CustomARView.swift in Sources */,
 				EF2EC9E62C8FA5F2004CF8FD /* Stroke.swift in Sources */,
+				EF1C0EAF2C9A32360018D16C /* ColorPickerButton.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
