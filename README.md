@@ -20,6 +20,11 @@ An AR drawing application built with **SwiftUI**, **RealityKit** and **ARKit**. 
 - **Undo Functionality**: Easily remove the last brush stroke.
 - **Screenshot Capture**: Take screenshots of your AR scene with a preview animation appearing at the bottom right corner.
 
+## Video Demo
+
+https://github.com/user-attachments/assets/f5c19549-0b3d-4dff-8db9-4e4d843610e4
+
+
 ## License
 This project is licensed under the MIT License.
 
