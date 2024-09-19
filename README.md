@@ -4,7 +4,7 @@
 [![Xcode](https://img.shields.io/badge/Xcode-15%2B-blue.svg?style=flat)](https://developer.apple.com/xcode/)
 [![iOS](https://img.shields.io/badge/iOS-17%2B-lightgrey.svg?style=flat)](https://www.apple.com/ios/)
 
-An AR drawing application built with **SwiftUI**, **RealityKit** and **ARKit**. This app allows users to draw in 3D space using different brush materials, capture screenshots with animated previews, and receive real-time tracking feedback to enhance the AR experience. I plan to deploy it in App Store sometime in the future.
+An AR drawing application built with **SwiftUI**, **RealityKit** and **ARKit**. This app allows users to draw in 3D space using tap gestures on their phone with different brush materials, capture screenshots with animated previews, and receive real-time tracking feedback to enhance the AR experience. I plan to deploy it on the App Store sometime in the future.
 
 ### Main view screenshots
 
