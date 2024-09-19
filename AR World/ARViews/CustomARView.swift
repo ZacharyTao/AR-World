@@ -59,9 +59,9 @@ class CustomARView: ARView, ObservableObject{
         
         let distance = distance(targetPosition, previousPosition)
         if distance > 0.0018 {
-            let positions = getPositionsOnLineBetween(point1: previousPosition, andPoint2: targetPosition, withSpacing: 0.001)
-            currentStroke.updateStroke(at: positions)
-            //currentStroke.updateStroke(at: targetPosition)
+           // let positions = getPositionsOnLineBetween(point1: previousPosition, andPoint2: targetPosition, withSpacing: 0.001)
+            //currentStroke.updateStroke(at: positions)
+            currentStroke.updateStroke(at: targetPosition)
             updateMesh()
         }
         self.previousPosition = targetPosition

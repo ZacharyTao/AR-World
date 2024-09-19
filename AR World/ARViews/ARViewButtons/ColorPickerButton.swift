@@ -11,6 +11,6 @@ extension ARMainView{
     var ColorPickerButton: some View{
         ColorPicker("", selection: $customARView.selectedColor, supportsOpacity: false)
             .labelsHidden()
-            .frame(width: 30)
+            .scaleEffect(isIPhone() ? 1 : 1.6)
     }
 }

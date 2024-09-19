@@ -319,7 +319,7 @@
 				DEVELOPMENT_TEAM = DP7CA5HH9V;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = "AR World - an AR Drawing Tool";
+				INFOPLIST_KEY_CFBundleDisplayName = "AR World";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.graphics-design";
 				INFOPLIST_KEY_NSCameraUsageDescription = "";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Required to save snapshot to photo library ";
@@ -357,7 +357,7 @@
 				DEVELOPMENT_TEAM = DP7CA5HH9V;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = "AR World - an AR Drawing Tool";
+				INFOPLIST_KEY_CFBundleDisplayName = "AR World";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.graphics-design";
 				INFOPLIST_KEY_NSCameraUsageDescription = "";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Required to save snapshot to photo library ";

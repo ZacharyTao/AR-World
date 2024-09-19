@@ -51,3 +51,8 @@ func getPositionsOnLineBetween(point1: SIMD3<Float>,
     }
     return positions
 }
+
+// Function to return dynamic size based on device type
+func isIPhone() -> Bool {
+    UIDevice.current.userInterfaceIdiom == .phone
+}

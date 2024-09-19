@@ -15,15 +15,15 @@ extension ARMainView{
             Image(uiImage: screenshotImage)
                 .resizable()
                 .scaledToFit()
-                .frame(width: 80)
+                .frame(width: isIPhone() ? (isPortraitMode ? 80 : 150) : 200)
                 .cornerRadius(20)
                 .overlay{
                     RoundedRectangle(cornerRadius: 20)
                         .stroke(.white, lineWidth: 4)
                 }
                 .shadow(radius: 5)
-                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
-                .transition(.move(edge: .trailing))
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: isPortraitMode ? .topTrailing : .topLeading)
+                .transition(isPortraitMode ? .move(edge: .trailing) : .move(edge: .leading))
                 .padding()
         }
     }
@@ -56,7 +56,7 @@ extension ARMainView{
             Image(systemName: "camera")
                 .resizable()
                 .scaledToFit()
-                .frame(width: 30)
+                .frame(width: isIPhone() ? 30 : 60)
                 .foregroundStyle(.white)
                 .bold()
         }

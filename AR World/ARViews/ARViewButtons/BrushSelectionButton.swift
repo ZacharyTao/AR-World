@@ -15,10 +15,10 @@ extension ARMainView{
             Image(systemName: "paintbrush.pointed")
                 .resizable()
                 .scaledToFit()
-                .frame(width: 30)
+                .frame(width: isIPhone() ? 30 : 60)
                 .foregroundStyle(.white)
                 .bold()
-        }.popover(isPresented: $isBrushMenuPopover, attachmentAnchor: .point(.top), arrowEdge: .bottom, content: {
+        }.popover(isPresented: $isBrushMenuPopover, attachmentAnchor: isPortraitMode ? .point(.top) : .point(.leading), arrowEdge: isPortraitMode ? .bottom : .trailing, content: {
             BrushSelectionView
                 .presentationBackground(.ultraThinMaterial)
                 .presentationCompactAdaptation(.popover)

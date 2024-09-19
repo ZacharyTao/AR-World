@@ -13,10 +13,10 @@ extension ARMainView{
             customARView.undoLastStroke()
             UIImpactFeedbackGenerator(style: .rigid).impactOccurred()
         }label: {
-            Image(systemName: "arrow.uturn.backward")
+            Image(systemName: "arrow.uturn.backward.circle")
                 .resizable()
                 .scaledToFit()
-                .frame(width: 25)
+                .frame(width: isIPhone() ? 30 : 60)
                 .foregroundStyle(.white)
                 .bold()
         }

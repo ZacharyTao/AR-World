@@ -16,7 +16,12 @@ struct ARMainView : View {
     @State var screenshotImage: UIImage?
     @State var showPreview = false
     @State var hidePreviewWorkItem: DispatchWorkItem?
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @Environment(\.verticalSizeClass) private var verticalSizeClass
     
+    var isPortraitMode : Bool {
+        horizontalSizeClass == .compact && verticalSizeClass == .regular
+    }
     
     
     var body: some View {
@@ -24,20 +29,29 @@ struct ARMainView : View {
             ARViewContainer(customARView: customARView)
                 .edgesIgnoringSafeArea(.all)
             
-            // Main UI Elements
-            VStack {
-                Spacer()
-                HStack {
-                    UndoButton
+            
+            if isPortraitMode {
+                // iPhone portrait
+                VStack {
                     Spacer()
-                    BrushSelectionButton
-                    Spacer()
-                    ColorPickerButton
-                    Spacer()
-                    CameraButton
+                    HStack {
+                        buttonView
+                    }
                 }
+                .padding(.horizontal, 50)
             }
-            .padding(.horizontal, 50)
+            else  {
+                // iPhone landscape
+                HStack{
+                    Spacer()
+                    VStack{
+                        buttonView
+                    }
+                }
+                .padding(.vertical, 25)
+                .padding(.horizontal, 20)
+            }
+
             
             // Screenshot Preview
             ScreenShotPreview
@@ -63,6 +77,17 @@ struct ARMainView : View {
             }
         }
         .animation(.bouncy, value: customARView.cameraTrackingMessageIsShowing)
+    }
+    
+    @ViewBuilder
+    var buttonView: some View {
+        UndoButton
+        Spacer()
+        BrushSelectionButton
+        Spacer()
+        ColorPickerButton
+        Spacer()
+        CameraButton
     }
 }
 
