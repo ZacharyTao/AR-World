@@ -27,6 +27,10 @@ class Stroke{
         points.append(position)
     }
     
+    func updateStroke(at positions: [SIMD3<Float>]){
+        points += positions
+    }
+    
     @MainActor
     func generateStrokeEntity(segments: Int = 8) throws -> ModelEntity{
         let tubeMaterial : Material

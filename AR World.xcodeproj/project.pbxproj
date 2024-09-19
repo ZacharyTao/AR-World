@@ -16,7 +16,6 @@
 		EF2EC9CE2C8CE646004CF8FD /* ARMainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF2EC9CD2C8CE646004CF8FD /* ARMainView.swift */; };
 		EF2EC9D02C8CE646004CF8FD /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EF2EC9CF2C8CE646004CF8FD /* Assets.xcassets */; };
 		EF2EC9DA2C8CE695004CF8FD /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF2EC9D92C8CE695004CF8FD /* Utilities.swift */; };
-		EF2EC9E02C8CF457004CF8FD /* ARViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF2EC9DF2C8CF457004CF8FD /* ARViewModel.swift */; };
 		EF2EC9E62C8FA5F2004CF8FD /* Stroke.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF2EC9E52C8FA5F2004CF8FD /* Stroke.swift */; };
 		EF2ECA082C90B09F004CF8FD /* ARViewContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF2ECA072C90B09F004CF8FD /* ARViewContainer.swift */; };
 /* End PBXBuildFile section */
@@ -32,7 +31,6 @@
 		EF2EC9CD2C8CE646004CF8FD /* ARMainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARMainView.swift; sourceTree = "<group>"; };
 		EF2EC9CF2C8CE646004CF8FD /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		EF2EC9D92C8CE695004CF8FD /* Utilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utilities.swift; sourceTree = "<group>"; };
-		EF2EC9DF2C8CF457004CF8FD /* ARViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARViewModel.swift; sourceTree = "<group>"; };
 		EF2EC9E52C8FA5F2004CF8FD /* Stroke.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Stroke.swift; sourceTree = "<group>"; };
 		EF2ECA072C90B09F004CF8FD /* ARViewContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARViewContainer.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -92,7 +90,6 @@
 			children = (
 				EF1C0EAB2C9A31780018D16C /* ARViewButtons */,
 				EF2EC9CD2C8CE646004CF8FD /* ARMainView.swift */,
-				EF2EC9DF2C8CF457004CF8FD /* ARViewModel.swift */,
 				EF2ECA072C90B09F004CF8FD /* ARViewContainer.swift */,
 				EF1C0EA72C94FB2F0018D16C /* CustomARView.swift */,
 			);
@@ -182,7 +179,6 @@
 				EF2ECA082C90B09F004CF8FD /* ARViewContainer.swift in Sources */,
 				EF1C0EAD2C9A319C0018D16C /* UndoButton.swift in Sources */,
 				EF2EC9CE2C8CE646004CF8FD /* ARMainView.swift in Sources */,
-				EF2EC9E02C8CF457004CF8FD /* ARViewModel.swift in Sources */,
 				EF2EC9CC2C8CE646004CF8FD /* ARWorldApp.swift in Sources */,
 				EF1C0EA82C94FB2F0018D16C /* CustomARView.swift in Sources */,
 				EF2EC9E62C8FA5F2004CF8FD /* Stroke.swift in Sources */,
@@ -323,6 +319,8 @@
 				DEVELOPMENT_TEAM = DP7CA5HH9V;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "AR World - an AR Drawing Tool";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.graphics-design";
 				INFOPLIST_KEY_NSCameraUsageDescription = "";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Required to save snapshot to photo library ";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -338,6 +336,10 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "zachTao.AR-World";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -355,6 +357,8 @@
 				DEVELOPMENT_TEAM = DP7CA5HH9V;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "AR World - an AR Drawing Tool";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.graphics-design";
 				INFOPLIST_KEY_NSCameraUsageDescription = "";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Required to save snapshot to photo library ";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -370,6 +374,10 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "zachTao.AR-World";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
