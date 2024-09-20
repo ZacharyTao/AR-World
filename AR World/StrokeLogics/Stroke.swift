@@ -12,47 +12,60 @@ class Stroke{
     var color: UIColor
     let anchor: AnchorEntity
     let radius: Float
-    var points: [SIMD3<Float>] = []
-    var material: BrushMaterial
+    var points: [SIMD3<Float>]
+    var material: Material
+    let startSphereEntity: ModelEntity
+    let endSphereEntity: ModelEntity
+    let segments: Int
+
     
-    
-    init(color: UIColor, at position: SIMD3<Float>, radius: Float, material: BrushMaterial) {
+    init(color: UIColor, at position: SIMD3<Float>, radius: Float, material: BrushMaterial, segments: Int = 8) {
         self.color = color
         self.anchor = AnchorEntity(world: position)
         self.radius = radius
-        self.material = material
+        self.points = [position]
+        self.segments = segments
+
+        switch material {
+        case .basic:
+            self.material = UnlitMaterial(color: color)
+        case .realistic:
+            self.material = SimpleMaterial(color: color, roughness: 0.8, isMetallic: true)
+        case .metallic:
+            self.material = SimpleMaterial(color: color, isMetallic: true)
+        }
+        self.startSphereEntity = ModelEntity(mesh: .generateSphere(radius: radius), materials: [self.material])
+        self.endSphereEntity = startSphereEntity.clone(recursive: false)
+        startSphereEntity.position = position
     }
     
     func updateStroke(at position: SIMD3<Float>){
         points.append(position)
+        anchor.children.removeAll()
+        do{
+            let entity = try generateStrokeEntity()
+            anchor.addChild(entity, preservingWorldTransform: true)
+            
+        }catch {
+            print("Failed to generate mesh: \(error.localizedDescription)")
+            return
+        }
     }
     
     func updateStroke(at positions: [SIMD3<Float>]){
-        points += positions
+        for position in positions {
+            updateStroke(at: position)
+        }
     }
     
     func generateStrokeEntity(segments: Int = 8) throws -> ModelEntity{
-        let tubeMaterial : Material
-        
-        switch material {
-        case .basic:
-            tubeMaterial = UnlitMaterial(color: color)
-        case .realistic:
-            tubeMaterial = SimpleMaterial(color: color, roughness: 0.8, isMetallic: true)
-        case .metallic:
-            tubeMaterial = SimpleMaterial(color: color, isMetallic: true)
-        }
+
         if points.count <= 3{
             return ModelEntity()
         }
         
-        let tubeMesh = try generateTubeMesh(segments: segments)
-        let tubeEntity = ModelEntity(mesh: tubeMesh, materials: [tubeMaterial])
-                
-        let startSphereEntity = ModelEntity(mesh: .generateSphere(radius: radius), materials: [tubeMaterial])
-        startSphereEntity.position = points.first!
-        
-        let endSphereEntity = startSphereEntity.clone(recursive: false)
+        let tubeMesh = try generateTubeMesh()
+        let tubeEntity = ModelEntity(mesh: tubeMesh, materials: [material])
         endSphereEntity.position = points.last!
         
         let parentEntity = ModelEntity()
@@ -63,7 +76,7 @@ class Stroke{
         return parentEntity
     }
     
-    func generateTubeMesh(segments: Int) throws -> MeshResource {
+    func generateTubeMesh() throws -> MeshResource {
         guard points.count >= 2 else { return try MeshResource.generate(from: [])}
         var vertices: [SIMD3<Float>] = []
         var normals: [SIMD3<Float>] = []

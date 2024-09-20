@@ -48,7 +48,6 @@ class CustomARView: ARView, ObservableObject{
         guard let targetPosition = getPosition(ofPoint: location, atDistanceFromCamera: 0.2, inView: self) else { return }
         previousPosition = targetPosition
         currentStroke = Stroke(color: UIColor(selectedColor), at: targetPosition, radius: selectedRadius.rawValue, material: selectedBrushMaterial)
-        
         scene.addAnchor(currentStroke!.anchor)
     }
     
@@ -63,7 +62,6 @@ class CustomARView: ARView, ObservableObject{
             //currentStroke.updateStroke(at: positions)
             currentStroke.updateStroke(at: targetPosition)
             print(distance)
-            updateMesh()
         }
         self.previousPosition = targetPosition
     }
@@ -74,21 +72,6 @@ class CustomARView: ARView, ObservableObject{
         }
         currentStroke = nil
         previousPosition = nil
-    }
-    
-    private func updateMesh() {
-        guard let currentStroke = currentStroke else { return }
-        
-        currentStroke.anchor.children.removeAll()
-        
-        do{
-            let entity = try currentStroke.generateStrokeEntity()
-            currentStroke.anchor.addChild(entity, preservingWorldTransform: true)
-            
-        }catch {
-            print("Failed to generate mesh: \(error.localizedDescription)")
-            return
-        }
     }
     
     func undoLastStroke() {
