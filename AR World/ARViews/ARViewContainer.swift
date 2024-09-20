@@ -22,6 +22,7 @@ struct ARViewContainer: UIViewRepresentable {
             print("This device doesn't support segmentation with depth")
         }
         customARView.session.run(config)
+        //customARView.debugOptions.insert(.showStatistics)
         return customARView
         
         

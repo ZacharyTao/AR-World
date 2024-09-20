@@ -48,20 +48,21 @@ class CustomARView: ARView, ObservableObject{
         guard let targetPosition = getPosition(ofPoint: location, atDistanceFromCamera: 0.2, inView: self) else { return }
         previousPosition = targetPosition
         currentStroke = Stroke(color: UIColor(selectedColor), at: targetPosition, radius: selectedRadius.rawValue, material: selectedBrushMaterial)
-
+        
         scene.addAnchor(currentStroke!.anchor)
     }
     
     private func updateStroke(at location: CGPoint) {
-        guard let targetPosition = getPosition(ofPoint: location, atDistanceFromCamera: 0.2, inView: self),
-              let currentStroke = currentStroke,
-              let previousPosition = previousPosition else { return }
+        guard let currentStroke = currentStroke,
+              let previousPosition = previousPosition,
+              let targetPosition = getPosition(ofPoint: location, atDistanceFromCamera: 0.2, inView: self) else { return }
         
         let distance = distance(targetPosition, previousPosition)
         if distance > 0.0018 {
-           // let positions = getPositionsOnLineBetween(point1: previousPosition, andPoint2: targetPosition, withSpacing: 0.001)
+            // let positions = getPositionsOnLineBetween(point1: previousPosition, andPoint2: targetPosition, withSpacing: 0.001)
             //currentStroke.updateStroke(at: positions)
             currentStroke.updateStroke(at: targetPosition)
+            print(distance)
             updateMesh()
         }
         self.previousPosition = targetPosition
@@ -75,7 +76,6 @@ class CustomARView: ARView, ObservableObject{
         previousPosition = nil
     }
     
-    @MainActor
     private func updateMesh() {
         guard let currentStroke = currentStroke else { return }
         
@@ -84,7 +84,7 @@ class CustomARView: ARView, ObservableObject{
         do{
             let entity = try currentStroke.generateStrokeEntity()
             currentStroke.anchor.addChild(entity, preservingWorldTransform: true)
-
+            
         }catch {
             print("Failed to generate mesh: \(error.localizedDescription)")
             return
@@ -124,6 +124,6 @@ class CustomARView: ARView, ObservableObject{
             cameraTrackingMessageIsShowing = false
         }
     }
-
+    
 }
 

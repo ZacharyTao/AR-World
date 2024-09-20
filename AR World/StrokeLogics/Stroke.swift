@@ -31,7 +31,6 @@ class Stroke{
         points += positions
     }
     
-    @MainActor
     func generateStrokeEntity(segments: Int = 8) throws -> ModelEntity{
         let tubeMaterial : Material
         
@@ -64,7 +63,6 @@ class Stroke{
         return parentEntity
     }
     
-    @MainActor
     func generateTubeMesh(segments: Int) throws -> MeshResource {
         guard points.count >= 2 else { return try MeshResource.generate(from: [])}
         var vertices: [SIMD3<Float>] = []
@@ -72,8 +70,16 @@ class Stroke{
         var uvs: [SIMD2<Float>] = []
         var indices: [UInt32] = []
         
+        let pointCount = points.count
+        
+        let totalVertices = pointCount * segments
+        vertices.reserveCapacity(totalVertices)
+        normals.reserveCapacity(totalVertices)
+        uvs.reserveCapacity(totalVertices)
+        indices.reserveCapacity((pointCount - 1) * segments * 6)
+        
         for (i, point) in points.enumerated() {
-            let nextPoint = i < points.count - 1 ? points[i + 1] : point + (point - points[i - 1])
+            let nextPoint = i < pointCount - 1 ? points[i + 1] : point + (point - points[i - 1])
             let direction = normalize(nextPoint - point)
             let up = SIMD3<Float>(0, 1, 0)
             let right = normalize(cross(direction, up))
@@ -85,7 +91,7 @@ class Stroke{
                 let y = sin(angle)
                 let circlePoint = point + radius * (x * right + y * realUp)
                 let normal = normalize(circlePoint - point)
-                let uv = SIMD2<Float>(Float(i) / Float(points.count - 1), Float(j) / Float(segments))
+                let uv = SIMD2<Float>(Float(i) / Float(pointCount - 1), Float(j) / Float(segments))
                 
                 vertices.append(circlePoint)
                 normals.append(normal)
@@ -93,7 +99,7 @@ class Stroke{
             }
         }
         
-        for i in 0..<points.count - 1 {
+        for i in 0..<pointCount - 1 {
             for j in 0..<segments {
                 let nextJ = (j + 1) % segments
                 let currentRow = i * segments
