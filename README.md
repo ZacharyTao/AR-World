@@ -6,6 +6,15 @@
 
 An AR drawing application built with **SwiftUI**, **RealityKit** and **ARKit**. This app allows users to draw in 3D space using tap gestures on their phone with different brush materials, capture screenshots with animated previews, and receive real-time tracking feedback to enhance the AR experience. I plan to deploy it on the App Store sometime in the future.
 
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/f6b10e2d-4f99-4c48-ad5b-d01a43b6daa0" alt="resized_image_1" width="20%" />
+  <img src="https://github.com/user-attachments/assets/4605e0b4-b00f-49a4-bb21-2b97ffa11c8b" alt="resized_image_2" width="20%" />
+  <img src="https://github.com/user-attachments/assets/264754ba-fbd8-4108-9583-9bf067280566" alt="resized_image_3" width="20%" />
+  <img src="https://github.com/user-attachments/assets/d3393acb-fd0e-44cc-8d79-4d26aaadc8d4" alt="resized_image_4" width="20%" />
+  <img src="https://github.com/user-attachments/assets/a9ae8eb3-98b6-41ca-a1cc-87ed27e107b5" alt="resized_image_5" width="20%" />
+</p>
+
+
 ### Main view screenshots
 
 | Materials Options | Width Options | People Occlusion | Snapshot |
