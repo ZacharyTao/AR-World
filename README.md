@@ -4,8 +4,6 @@
 [![Xcode](https://img.shields.io/badge/Xcode-15%2B-blue.svg?style=flat)](https://developer.apple.com/xcode/)
 [![iOS](https://img.shields.io/badge/iOS-17%2B-lightgrey.svg?style=flat)](https://www.apple.com/ios/)
 
-Contact zacharywtao@gmail.com to join the internal testing group on TestFlight!
-
 AR World is now deployed on App Store!! Download the most updated version here: [App Store Link](https://apps.apple.com/us/app/ar-world-ar-drawing-tool/id6698898256)
 
 
