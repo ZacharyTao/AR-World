@@ -7,7 +7,7 @@
 AR World is now deployed on App Store!! Download the most updated version here: [App Store Link](https://apps.apple.com/us/app/ar-world-ar-drawing-tool/id6698898256)
 
 
-An AR drawing application built with **SwiftUI**, **RealityKit** and **ARKit**. This app allows users to draw in 3D space using tap gestures on their phone with different brush materials, capture screenshots with animated previews, and receive real-time tracking feedback to enhance the AR experience. I plan to deploy it on the App Store sometime in the future.
+An AR drawing application built with **SwiftUI**, **RealityKit** and **ARKit**. This app allows users to draw in 3D space using tap gestures on their phone with different brush materials, capture screenshots with animated previews, and receive real-time tracking feedback to enhance the AR experience.
 
 <p align="center">
   <img src="https://github.com/user-attachments/assets/f6b10e2d-4f99-4c48-ad5b-d01a43b6daa0" alt="resized_image_1" width="15%" />
