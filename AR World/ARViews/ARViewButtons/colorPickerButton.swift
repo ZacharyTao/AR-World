@@ -7,8 +7,8 @@
 
 import SwiftUI
 
-extension ARMainView{
-    var ColorPickerButton: some View{
+extension ARMainView {
+    var colorPickerButton: some View {
         ColorPicker("", selection: $customARView.selectedColor, supportsOpacity: false)
             .labelsHidden()
             .scaleEffect(isIPhone() ? 1 : 1.6)

@@ -7,9 +7,9 @@
 
 import SwiftUI
 
-extension ARMainView{
-    var UndoButton: some View{
-        Button{
+extension ARMainView {
+    var undoButton: some View {
+        Button {
             customARView.undoLastStroke()
             UIImpactFeedbackGenerator(style: .rigid).impactOccurred()
         }label: {

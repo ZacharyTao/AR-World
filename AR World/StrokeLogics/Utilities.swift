@@ -14,7 +14,6 @@ func getPosition(ofPoint point: CGPoint,
                  inView view: ARView) -> SIMD3<Float>? {
     // Get the current camera position
     let cameraPosition = view.cameraTransform.translation
-    
     // Get the direction from the camera to the 2D point on the screen
     guard let directionOfPoint =  view.ray(through: point)?.direction else { return nil }
 
@@ -45,8 +44,9 @@ func getPositionsOnLineBetween(point1: SIMD3<Float>,
     // Normalize vector BA by dividing it by its length
     let vectorBANormalized = normalize(vectorBA)
     // This new vector can now be scaled and added to A to find the point at the specified distance
-    for i in 0...((numberOfCirclesToCreate > 1) ? (numberOfCirclesToCreate - 1) : numberOfCirclesToCreate) {
-        let position = point1 + (vectorBANormalized * (Float(i) * spacing))
+    //
+    for index in 0...((numberOfCirclesToCreate > 1) ? (numberOfCirclesToCreate - 1) : numberOfCirclesToCreate) {
+        let position = point1 + (vectorBANormalized * (Float(index) * spacing))
         positions.append(position)
     }
     return positions

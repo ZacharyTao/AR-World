@@ -9,13 +9,13 @@ import RealityKit
 import ARKit
 import SwiftUI
 
-class CustomARView: ARView, ObservableObject{
+class CustomARView: ARView, ObservableObject {
     private var currentStroke: Stroke?
     private var previousPosition: SIMD3<Float>?
     var selectedColor: Color = .white
     var selectedRadius: BrushRadius = .medium
     var selectedBrushMaterial: BrushMaterial = .basic
-    var document : [Stroke] = []
+    var document: [Stroke] = []
     
     @Published var cameraTrackingMessageIsShowing = false
     @Published var trackingStateTitleLabel = ""
@@ -45,21 +45,24 @@ class CustomARView: ARView, ObservableObject{
     }
     
     private func startNewStroke(at location: CGPoint) {
-        guard let targetPosition = getPosition(ofPoint: location, atDistanceFromCamera: 0.2, inView: self) else { return }
+        guard let targetPosition = getPosition(ofPoint: location, atDistanceFromCamera: 0.2, inView: self)
+        else { return }
         previousPosition = targetPosition
-        currentStroke = Stroke(color: UIColor(selectedColor), at: targetPosition, radius: selectedRadius.rawValue, material: selectedBrushMaterial)
+        currentStroke = Stroke(color: UIColor(selectedColor),
+                               at: targetPosition,
+                               radius: selectedRadius.rawValue,
+                               material: selectedBrushMaterial)
         scene.addAnchor(currentStroke!.anchor)
     }
     
     private func updateStroke(at location: CGPoint) {
         guard let currentStroke = currentStroke,
               let previousPosition = previousPosition,
-              let targetPosition = getPosition(ofPoint: location, atDistanceFromCamera: 0.2, inView: self) else { return }
+              let targetPosition = getPosition(ofPoint: location, atDistanceFromCamera: 0.2, inView: self)
+        else { return }
         
         let distance = distance(targetPosition, previousPosition)
         if distance > 0.0018 {
-            // let positions = getPositionsOnLineBetween(point1: previousPosition, andPoint2: targetPosition, withSpacing: 0.001)
-            //currentStroke.updateStroke(at: positions)
             currentStroke.updateStroke(at: targetPosition)
             print(distance)
         }
@@ -67,7 +70,7 @@ class CustomARView: ARView, ObservableObject{
     }
     
     private func finishStroke() {
-        if let currentStroke{
+        if let currentStroke {
             document.append(currentStroke)
         }
         currentStroke = nil
@@ -83,7 +86,6 @@ class CustomARView: ARView, ObservableObject{
         switch camera.trackingState {
         case .notAvailable:
             cameraTrackingMessageIsShowing = false
-            break
         case .limited(.initializing):
             // "Initializing AR session."
             cameraTrackingMessageIsShowing = true
@@ -109,4 +111,3 @@ class CustomARView: ARView, ObservableObject{
     }
     
 }
-

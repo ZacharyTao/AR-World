@@ -6,9 +6,9 @@
 //
 import SwiftUI
 
-extension ARMainView{
-    var BrushSelectionButton: some View {
-        Button{
+extension ARMainView {
+    var brushSelectionButton: some View {
+        Button {
             UIImpactFeedbackGenerator(style: .rigid).impactOccurred()
             isBrushMenuPopover.toggle()
         }label: {
@@ -18,17 +18,18 @@ extension ARMainView{
                 .frame(width: isIPhone() ? 30 : 60)
                 .foregroundStyle(.white)
                 .bold()
-        }.popover(isPresented: $isBrushMenuPopover, attachmentAnchor: isPortraitMode ? .point(.top) : .point(.leading), arrowEdge: isPortraitMode ? .bottom : .trailing, content: {
-            BrushSelectionView
+        }.popover(isPresented: $isBrushMenuPopover,
+                  attachmentAnchor: isPortraitMode ? .point(.top) : .point(.leading),
+                  arrowEdge: isPortraitMode ? .bottom : .trailing, content: {
+            brushSelectionView
                 .presentationBackground(.ultraThinMaterial)
                 .presentationCompactAdaptation(.popover)
         })
     }
     
-    var BrushSelectionView: some View{
-        HStack(spacing: 3){
-            VStack(spacing: 5){
-                
+    var brushSelectionView: some View {
+        HStack(spacing: 3) {
+            VStack(spacing: 5) {
                 Button {
                     UIImpactFeedbackGenerator(style: .rigid).impactOccurred()
                     customARView.selectedRadius = .thin
@@ -38,13 +39,12 @@ extension ARMainView{
                         .frame(width: 60, height: 60)
                         .foregroundStyle(.thinMaterial)
                         .opacity(customARView.selectedRadius == .thin ? 1 : 0)
-                        .overlay{
+                        .overlay {
                             RoundedRectangle(cornerRadius: 10)
                                 .fill(customARView.selectedColor)
                                 .frame(width: 30, height: 3)
                         }
                 }
-                
                 Button {
                     UIImpactFeedbackGenerator(style: .rigid).impactOccurred()
                     customARView.selectedRadius = .medium
@@ -54,13 +54,12 @@ extension ARMainView{
                         .frame(width: 60, height: 60)
                         .foregroundStyle(.thinMaterial)
                         .opacity(customARView.selectedRadius == .medium ? 1 : 0)
-                        .overlay{
+                        .overlay {
                             RoundedRectangle(cornerRadius: 10)
                                 .fill(customARView.selectedColor)
                                 .frame(width: 30, height: 6)
                         }
                 }
-                
                 Button {
                     UIImpactFeedbackGenerator(style: .rigid).impactOccurred()
                     customARView.selectedRadius = .wide
@@ -70,16 +69,14 @@ extension ARMainView{
                         .frame(width: 60, height: 60)
                         .foregroundStyle(.thinMaterial)
                         .opacity(customARView.selectedRadius == .wide ? 1 : 0)
-                        .overlay{
+                        .overlay {
                             RoundedRectangle(cornerRadius: 10)
                                 .fill(customARView.selectedColor)
                                 .frame(width: 30, height: 9)
                         }
                 }
             }
-            
-            VStack(spacing: 5){
-                
+            VStack(spacing: 5) {
                 Button {
                     UIImpactFeedbackGenerator(style: .rigid).impactOccurred()
                     customARView.selectedBrushMaterial = .basic
@@ -89,12 +86,11 @@ extension ARMainView{
                         .frame(width: 100, height: 60)
                         .foregroundStyle(.thinMaterial)
                         .opacity(customARView.selectedBrushMaterial == .basic ? 1 : 0)
-                        .overlay{
+                        .overlay {
                             Text("Basic")
                                 .foregroundStyle(customARView.selectedColor)
                         }
                 }
-                
                 Button {
                     UIImpactFeedbackGenerator(style: .rigid).impactOccurred()
                     customARView.selectedBrushMaterial = .realistic
@@ -104,13 +100,11 @@ extension ARMainView{
                         .frame(width: 100, height: 60)
                         .foregroundStyle(.thinMaterial)
                         .opacity(customARView.selectedBrushMaterial == .realistic ? 1 : 0)
-                        .overlay{
+                        .overlay {
                             Text("Realistic")
                                 .foregroundStyle(customARView.selectedColor)
-
                         }
                 }
-                
                 Button {
                     UIImpactFeedbackGenerator(style: .rigid).impactOccurred()
                     customARView.selectedBrushMaterial = .metallic
@@ -120,7 +114,7 @@ extension ARMainView{
                         .frame(width: 100, height: 60)
                         .foregroundStyle(.thinMaterial)
                         .opacity(customARView.selectedBrushMaterial == .metallic ? 1 : 0)
-                        .overlay{
+                        .overlay {
                             Text("Metallic")
                                 .foregroundStyle(customARView.selectedColor)
                         }

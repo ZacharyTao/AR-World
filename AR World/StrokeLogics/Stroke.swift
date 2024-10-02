@@ -8,7 +8,7 @@
 import RealityKit
 import ARKit
 
-class Stroke{
+class Stroke {
     var color: UIColor
     let anchor: AnchorEntity
     let radius: Float
@@ -18,14 +18,12 @@ class Stroke{
     let endSphereEntity: ModelEntity
     let segments: Int
 
-    
     init(color: UIColor, at position: SIMD3<Float>, radius: Float, material: BrushMaterial, segments: Int = 8) {
         self.color = color
         self.anchor = AnchorEntity(world: position)
         self.radius = radius
         self.points = [position]
         self.segments = segments
-
         switch material {
         case .basic:
             self.material = UnlitMaterial(color: color)
@@ -39,28 +37,28 @@ class Stroke{
         startSphereEntity.position = position
     }
     
-    func updateStroke(at position: SIMD3<Float>){
+    func updateStroke(at position: SIMD3<Float>) {
         points.append(position)
         anchor.children.removeAll()
-        do{
+        do {
             let entity = try generateStrokeEntity()
             anchor.addChild(entity, preservingWorldTransform: true)
             
-        }catch {
+        } catch {
             print("Failed to generate mesh: \(error.localizedDescription)")
             return
         }
     }
     
-    func updateStroke(at positions: [SIMD3<Float>]){
+    func updateStroke(at positions: [SIMD3<Float>]) {
         for position in positions {
             updateStroke(at: position)
         }
     }
     
-    func generateStrokeEntity(segments: Int = 8) throws -> ModelEntity{
-
-        if points.count <= 3{
+    func generateStrokeEntity(segments: Int = 8) throws -> ModelEntity {
+        
+        if points.count <= 3 {
             return ModelEntity()
         }
         
@@ -91,8 +89,9 @@ class Stroke{
         uvs.reserveCapacity(totalVertices)
         indices.reserveCapacity((pointCount - 1) * segments * 6)
         
-        for (i, point) in points.enumerated() {
-            let nextPoint = i < pointCount - 1 ? points[i + 1] : point + (point - points[i - 1])
+        // swiftlint:disable identifier_name
+        for (index, point) in points.enumerated() {
+            let nextPoint = index < pointCount - 1 ? points[index + 1] : point + (point - points[index - 1])
             let direction = normalize(nextPoint - point)
             let up = SIMD3<Float>(0, 1, 0)
             let right = normalize(cross(direction, up))
@@ -104,14 +103,14 @@ class Stroke{
                 let y = sin(angle)
                 let circlePoint = point + radius * (x * right + y * realUp)
                 let normal = normalize(circlePoint - point)
-                let uv = SIMD2<Float>(Float(i) / Float(pointCount - 1), Float(j) / Float(segments))
+                let uv = SIMD2<Float>(Float(index) / Float(pointCount - 1), Float(j) / Float(segments))
                 
                 vertices.append(circlePoint)
                 normals.append(normal)
                 uvs.append(uv)
             }
         }
-        
+
         for i in 0..<pointCount - 1 {
             for j in 0..<segments {
                 let nextJ = (j + 1) % segments
@@ -124,6 +123,7 @@ class Stroke{
                 ])
             }
         }
+        // swiftlint:enable identifier_name
         
         var descriptor = MeshDescriptor()
         descriptor.positions = MeshBuffers.Positions(vertices)
@@ -137,13 +137,13 @@ class Stroke{
     
 }
 
-enum BrushRadius: Float{
+enum BrushRadius: Float {
     case thin = 0.002
     case medium = 0.006
     case wide = 0.010
 }
 
-enum BrushMaterial{
+enum BrushMaterial {
     case basic
     case realistic
     case metallic

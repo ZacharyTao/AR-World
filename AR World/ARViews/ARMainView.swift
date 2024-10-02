@@ -9,8 +9,7 @@ import SwiftUI
 import RealityKit
 import ARKit
 
-
-struct ARMainView : View {
+struct ARMainView: View {
     @StateObject var customARView = CustomARView()
     @State var isBrushMenuPopover = false
     @State var screenshotImage: UIImage?
@@ -19,16 +18,14 @@ struct ARMainView : View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.verticalSizeClass) private var verticalSizeClass
     
-    var isPortraitMode : Bool {
+    var isPortraitMode: Bool {
         horizontalSizeClass == .compact && verticalSizeClass == .regular
     }
-    
     
     var body: some View {
         ZStack {
             ARViewContainer(customARView: customARView)
                 .edgesIgnoringSafeArea(.all)
-            
             
             if isPortraitMode {
                 // iPhone portrait
@@ -39,22 +36,20 @@ struct ARMainView : View {
                     }
                 }
                 .padding(.horizontal, 50)
-            }
-            else  {
+            } else {
                 // iPhone landscape
-                HStack{
+                HStack {
                     Spacer()
-                    VStack{
+                    VStack {
                         buttonView
                     }
                 }
                 .padding(.vertical, 25)
                 .padding(.horizontal, 20)
             }
-
             
             // Screenshot Preview
-            ScreenShotPreview
+            screenShotPreview
                 .zIndex(1)
             
             // Tracking State Message
@@ -81,18 +76,16 @@ struct ARMainView : View {
     
     @ViewBuilder
     var buttonView: some View {
-        UndoButton
+        undoButton
         Spacer()
-        BrushSelectionButton
+        brushSelectionButton
         Spacer()
-        ColorPickerButton
+        colorPickerButton
         Spacer()
-        CameraButton
+        cameraButton
     }
 }
 
 #Preview {
     ARMainView()
 }
-
-

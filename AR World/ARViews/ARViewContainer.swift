@@ -13,8 +13,15 @@ struct ARViewContainer: UIViewRepresentable {
     var customARView: CustomARView
     func makeUIView(context: Context) -> ARView {
         customARView.session.delegate = context.coordinator
-        customARView.renderOptions.insert([.disableHDR, .disableGroundingShadows, .disableAREnvironmentLighting, .disableDepthOfField, .disableCameraGrain, .disableMotionBlur, .disableAREnvironmentLighting])
-        //customARView.environment.sceneUnderstanding.options.insert(.occlusion)
+        customARView.renderOptions.insert([
+            .disableHDR,
+            .disableGroundingShadows,
+            .disableAREnvironmentLighting,
+            .disableDepthOfField,
+            .disableCameraGrain,
+            .disableMotionBlur,
+            .disableAREnvironmentLighting])
+        // customARView.environment.sceneUnderstanding.options.insert(.occlusion)
         let config = ARWorldTrackingConfiguration()
         if type(of: config).supportsFrameSemantics(.sceneDepth) {
             config.frameSemantics = .personSegmentationWithDepth
@@ -22,10 +29,8 @@ struct ARViewContainer: UIViewRepresentable {
             print("This device doesn't support segmentation with depth")
         }
         customARView.session.run(config)
-        //customARView.debugOptions.insert(.showStatistics)
+        // customARView.debugOptions.insert(.showStatistics)
         return customARView
-        
-        
     }
     
     func updateUIView(_ uiView: ARView, context: Context) {
@@ -49,5 +54,3 @@ struct ARViewContainer: UIViewRepresentable {
         }
     }
 }
-
-
