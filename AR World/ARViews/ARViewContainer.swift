@@ -12,7 +12,6 @@ import ARKit
 struct ARViewContainer: UIViewRepresentable {
     var customARView: CustomARView
     func makeUIView(context: Context) -> ARView {
-        customARView.session.delegate = context.coordinator
         customARView.renderOptions.insert([
             .disableHDR,
             .disableGroundingShadows,
@@ -21,7 +20,15 @@ struct ARViewContainer: UIViewRepresentable {
             .disableCameraGrain,
             .disableMotionBlur,
             .disableAREnvironmentLighting])
-        // customARView.environment.sceneUnderstanding.options.insert(.occlusion)
+
+        let coachingOverlay = ARCoachingOverlayView()
+        coachingOverlay.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        coachingOverlay.activatesAutomatically = true
+        coachingOverlay.goal = .tracking
+        coachingOverlay.session = customARView.session
+        coachingOverlay.setActive(true, animated: true)
+        customARView.addSubview(coachingOverlay)
+
         let config = ARWorldTrackingConfiguration()
         if type(of: config).supportsFrameSemantics(.sceneDepth) {
             config.frameSemantics = .personSegmentationWithDepth
@@ -29,28 +36,9 @@ struct ARViewContainer: UIViewRepresentable {
             print("This device doesn't support segmentation with depth")
         }
         customARView.session.run(config)
-        // customARView.debugOptions.insert(.showStatistics)
         return customARView
     }
-    
+
     func updateUIView(_ uiView: ARView, context: Context) {
-    }
-    
-    func makeCoordinator() -> Coordinator {
-        Coordinator(self)
-    }
-    
-    final class Coordinator: NSObject, ARSessionDelegate {
-        
-        var parent: ARViewContainer
-        
-        init(_ parent: ARViewContainer) {
-            self.parent = parent
-        }
-        
-        func session(_ session: ARSession, cameraDidChangeTrackingState camera: ARCamera) {
-            parent.customARView.updateCameraTrackingState(for: camera)
-            print(camera.trackingState)
-        }
     }
 }
