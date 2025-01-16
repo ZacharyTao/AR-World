@@ -59,7 +59,7 @@ class CustomARView: ARView {
         else { return }
         
         let distance = distance(targetPosition, previousPosition)
-        if distance > 0.0018 {
+        if distance > 0.002 {
             currentStroke.updateStroke(at: targetPosition)
             print(distance)
         }

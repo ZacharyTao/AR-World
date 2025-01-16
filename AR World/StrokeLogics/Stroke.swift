@@ -56,7 +56,7 @@ class Stroke {
         }
     }
     
-    func generateStrokeEntity(segments: Int = 8) throws -> ModelEntity {
+    func generateStrokeEntity() throws -> ModelEntity {
         
         if points.count <= 3 {
             return ModelEntity()
