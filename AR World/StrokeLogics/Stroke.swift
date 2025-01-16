@@ -43,7 +43,6 @@ class Stroke {
         do {
             let entity = try generateStrokeEntity()
             anchor.addChild(entity, preservingWorldTransform: true)
-            
         } catch {
             print("Failed to generate mesh: \(error.localizedDescription)")
             return
@@ -57,7 +56,6 @@ class Stroke {
     }
     
     func generateStrokeEntity() throws -> ModelEntity {
-        
         if points.count <= 3 {
             return ModelEntity()
         }
@@ -75,7 +73,7 @@ class Stroke {
     }
     
     func generateTubeMesh() throws -> MeshResource {
-        guard points.count >= 2 else { return try MeshResource.generate(from: [])}
+        guard points.count >= 2 else { return try MeshResource.generate(from: []) }
         var vertices: [SIMD3<Float>] = []
         var normals: [SIMD3<Float>] = []
         var uvs: [SIMD2<Float>] = []
@@ -134,7 +132,6 @@ class Stroke {
         return try MeshResource.generate(from: [descriptor])
         
     }
-    
 }
 
 enum BrushRadius: Float {

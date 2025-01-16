@@ -17,30 +17,30 @@ class CustomARView: ARView {
     var selectedRadius: BrushRadius = .medium
     var selectedBrushMaterial: BrushMaterial = .basic
     var document: [Stroke] = []
-    
+
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         guard let touch = touches.first else { return }
         let location = touch.location(in: self)
         startNewStroke(at: location)
         UIImpactFeedbackGenerator(style: .light).impactOccurred()
     }
-    
+
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
         guard let touch = touches.first else { return }
         let location = touch.location(in: self)
         updateStroke(at: location)
     }
-    
+
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         finishStroke()
         UIImpactFeedbackGenerator(style: .light).impactOccurred()
     }
-    
+
     override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
         finishStroke()
         UIImpactFeedbackGenerator(style: .light).impactOccurred()
     }
-    
+
     private func startNewStroke(at location: CGPoint) {
         guard let targetPosition = getPosition(ofPoint: location, atDistanceFromCamera: 0.2, inView: self)
         else { return }
@@ -51,21 +51,25 @@ class CustomARView: ARView {
                                material: selectedBrushMaterial)
         scene.addAnchor(currentStroke!.anchor)
     }
-    
+
     private func updateStroke(at location: CGPoint) {
         guard let currentStroke = currentStroke,
               let previousPosition = previousPosition,
               let targetPosition = getPosition(ofPoint: location, atDistanceFromCamera: 0.2, inView: self)
         else { return }
-        
-        let distance = distance(targetPosition, previousPosition)
-        if distance > 0.002 {
+
+        let dist = distance(targetPosition, previousPosition)
+
+        let threshold = Float(0.001)
+
+        print("Distance: \(dist), Threshold: \(threshold), \(dist > threshold ? "✅" : "🟥")")
+
+        if dist > threshold {
             currentStroke.updateStroke(at: targetPosition)
-            print(distance)
+            self.previousPosition = targetPosition
         }
-        self.previousPosition = targetPosition
     }
-    
+
     private func finishStroke() {
         if let currentStroke {
             document.append(currentStroke)
@@ -73,7 +77,7 @@ class CustomARView: ARView {
         currentStroke = nil
         previousPosition = nil
     }
-    
+
     func undoLastStroke() {
         guard let lastStroke = document.popLast() else { return }
         lastStroke.anchor.removeFromParent()
