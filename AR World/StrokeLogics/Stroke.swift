@@ -80,13 +80,7 @@ class Stroke {
         var indices: [UInt32] = []
         
         let pointCount = points.count
-        
-        let totalVertices = pointCount * segments
-        vertices.reserveCapacity(totalVertices)
-        normals.reserveCapacity(totalVertices)
-        uvs.reserveCapacity(totalVertices)
-        indices.reserveCapacity((pointCount - 1) * segments * 6)
-        
+
         // swiftlint:disable identifier_name
         for (index, point) in points.enumerated() {
             let nextPoint = index < pointCount - 1 ? points[index + 1] : point + (point - points[index - 1])
@@ -130,17 +124,27 @@ class Stroke {
         descriptor.primitives = .triangles(indices)
         
         return try MeshResource.generate(from: [descriptor])
-        
     }
 }
 
-enum BrushRadius: Float {
-    case thin = 0.002
-    case medium = 0.006
-    case wide = 0.010
+enum BrushRadius: String, Codable, CaseIterable {
+    case thin 
+    case medium
+    case wide
+
+    func getValue() -> Float {
+        switch self {
+        case .thin:
+            return 0.002
+        case .medium:
+            return 0.006
+        case .wide:
+            return 0.010
+        }
+    }
 }
 
-enum BrushMaterial {
+enum BrushMaterial: String, Codable, CaseIterable {
     case basic
     case realistic
     case metallic

@@ -13,9 +13,10 @@ import SwiftUI
 class CustomARView: ARView {
     private var currentStroke: Stroke?
     private var previousPosition: SIMD3<Float>?
-    var selectedColor: Color = .white
-    var selectedRadius: BrushRadius = .medium
-    var selectedBrushMaterial: BrushMaterial = .basic
+
+    @ObservationIgnored @AppStorage("selectedColor") var selectedColor: Color = .white
+    @ObservationIgnored @AppStorage("selectedRadius") var selectedRadius: BrushRadius = .medium
+    @ObservationIgnored @AppStorage("selectedBrushMaterial") var selectedBrushMaterial: BrushMaterial = .basic
     var document: [Stroke] = []
 
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -47,7 +48,7 @@ class CustomARView: ARView {
         previousPosition = targetPosition
         currentStroke = Stroke(color: UIColor(selectedColor),
                                at: targetPosition,
-                               radius: selectedRadius.rawValue,
+                               radius: selectedRadius.getValue(),
                                material: selectedBrushMaterial)
         scene.addAnchor(currentStroke!.anchor)
     }
@@ -59,7 +60,6 @@ class CustomARView: ARView {
         else { return }
 
         let dist = distance(targetPosition, previousPosition)
-
         let threshold = Float(0.001)
 
         print("Distance: \(dist), Threshold: \(threshold), \(dist > threshold ? "✅" : "🟥")")
