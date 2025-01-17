@@ -82,4 +82,10 @@ class CustomARView: ARView {
         guard let lastStroke = document.popLast() else { return }
         lastStroke.anchor.removeFromParent()
     }
+
+    func clearAllStrokes() {
+        while !document.isEmpty {
+            undoLastStroke()
+        }
+    }
 }

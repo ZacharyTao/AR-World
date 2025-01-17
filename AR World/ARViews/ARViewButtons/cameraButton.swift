@@ -34,6 +34,7 @@ extension ARMainView {
     
     var cameraButton: some View {
         Button {
+            UIImpactFeedbackGenerator(style: .rigid).impactOccurred()
             customARView.snapshot(saveToHDR: true) { image in
                 guard let image else { return }
                 UIImageWriteToSavedPhotosAlbum(image, nil, nil, nil)
@@ -60,6 +61,5 @@ extension ARMainView {
                 .foregroundStyle(.white)
                 .bold()
         }
-        .sensoryFeedback(.success, trigger: showPreview)
     }
 }

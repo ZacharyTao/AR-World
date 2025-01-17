@@ -9,7 +9,6 @@ import SwiftUI
 extension ARMainView {
     var brushSelectionButton: some View {
         Button {
-            UIImpactFeedbackGenerator(style: .rigid).impactOccurred()
             isBrushMenuPopover.toggle()
         }label: {
             Image(systemName: "paintbrush.pointed")
@@ -31,7 +30,6 @@ extension ARMainView {
         HStack(spacing: 3) {
             VStack(spacing: 5) {
                 Button {
-                    UIImpactFeedbackGenerator(style: .rigid).impactOccurred()
                     customARView.selectedRadius = .thin
                     isBrushMenuPopover = false
                 } label: {
@@ -45,8 +43,8 @@ extension ARMainView {
                                 .frame(width: 30, height: 3)
                         }
                 }
+
                 Button {
-                    UIImpactFeedbackGenerator(style: .rigid).impactOccurred()
                     customARView.selectedRadius = .medium
                     isBrushMenuPopover = false
                 } label: {
@@ -60,8 +58,8 @@ extension ARMainView {
                                 .frame(width: 30, height: 6)
                         }
                 }
+
                 Button {
-                    UIImpactFeedbackGenerator(style: .rigid).impactOccurred()
                     customARView.selectedRadius = .wide
                     isBrushMenuPopover = false
                 } label: {
@@ -76,9 +74,9 @@ extension ARMainView {
                         }
                 }
             }
+
             VStack(spacing: 5) {
                 Button {
-                    UIImpactFeedbackGenerator(style: .rigid).impactOccurred()
                     customARView.selectedBrushMaterial = .basic
                     isBrushMenuPopover = false
                 } label: {
@@ -91,8 +89,8 @@ extension ARMainView {
                                 .foregroundStyle(customARView.selectedColor)
                         }
                 }
+
                 Button {
-                    UIImpactFeedbackGenerator(style: .rigid).impactOccurred()
                     customARView.selectedBrushMaterial = .realistic
                     isBrushMenuPopover = false
                 } label: {
@@ -105,8 +103,8 @@ extension ARMainView {
                                 .foregroundStyle(customARView.selectedColor)
                         }
                 }
+
                 Button {
-                    UIImpactFeedbackGenerator(style: .rigid).impactOccurred()
                     customARView.selectedBrushMaterial = .metallic
                     isBrushMenuPopover = false
                 } label: {
