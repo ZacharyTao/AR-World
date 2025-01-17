@@ -8,7 +8,6 @@
 import SwiftUI
 
 extension ARMainView {
-    
     @ViewBuilder
     var screenShotPreview: some View {
         if showPreview, let screenshotImage = screenshotImage {
@@ -27,30 +26,31 @@ extension ARMainView {
                        alignment: isPortraitMode ? .topTrailing : .topLeading)
                 .transition(isPortraitMode ? .move(edge: .trailing) : .move(edge: .leading))
                 .padding()
+                .onTapGesture {
+                    withAnimation(.bouncy.speed(0.4)) { showPreview = false }
+                }
         }
     }
     
     var cameraButton: some View {
         Button {
-            UIImpactFeedbackGenerator(style: .rigid).impactOccurred()
             customARView.snapshot(saveToHDR: true) { image in
                 guard let image else { return }
                 UIImageWriteToSavedPhotosAlbum(image, nil, nil, nil)
                 screenshotImage = image
+
                 withAnimation(.bouncy) {
                     showPreview = true
                 }
                 
                 hidePreviewWorkItem?.cancel()
                 
-                // Create a new hide action
                 hidePreviewWorkItem = DispatchWorkItem {
                     withAnimation(.bouncy.speed(0.4)) {
                         showPreview = false
                     }
                 }
                 DispatchQueue.main.asyncAfter(deadline: .now() + 2.5, execute: hidePreviewWorkItem!)
-                
             }
         }label: {
             Image(systemName: "camera")
@@ -60,5 +60,6 @@ extension ARMainView {
                 .foregroundStyle(.white)
                 .bold()
         }
+        .sensoryFeedback(.success, trigger: showPreview)
     }
 }
