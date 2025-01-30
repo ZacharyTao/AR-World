@@ -15,6 +15,11 @@ struct ARMainView: View {
     @State var screenshotImage: UIImage?
     @State var showPreview = false
     @State var hidePreviewWorkItem: DispatchWorkItem?
+    @State var showLibrary = false
+    @State var selectedMapID: String?
+    @State var showSaveSheet: Bool = false
+    @State var mapName = ""
+
     @AppStorage("isFirstTime") var isFirstTime = true
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.verticalSizeClass) private var verticalSizeClass
@@ -47,6 +52,7 @@ struct ARMainView: View {
                         }
                     }
                     .padding(.horizontal, 50)
+                    .ignoresSafeArea(.keyboard, edges: .bottom)
                 } else {
                     // iPhone landscape
                     HStack {
@@ -57,10 +63,24 @@ struct ARMainView: View {
                     }
                     .padding(.vertical, 25)
                     .padding(.horizontal, 20)
+                    .ignoresSafeArea(.keyboard, edges: .bottom)
                 }
 
                 screenShotPreview
                     .zIndex(1)
+            }
+            .sheet(isPresented: $showLibrary) {
+                LibrarySheet(selectedMapID: $selectedMapID)
+            }
+            .alert("Save map", isPresented: $showSaveSheet) {
+                TextField("Enter map name", text: $mapName)
+                Button("Save") {
+                    customARView.saveExperience(mapName: mapName)
+                    mapName = ""
+                }
+                Button("Cancel", role: .cancel) {
+                    mapName = ""
+                }
             }
         }
     }

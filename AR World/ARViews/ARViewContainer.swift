@@ -29,13 +29,9 @@ struct ARViewContainer: UIViewRepresentable {
         coachingOverlay.setActive(true, animated: true)
         customARView.addSubview(coachingOverlay)
 
-        let config = ARWorldTrackingConfiguration()
-        if type(of: config).supportsFrameSemantics(.sceneDepth) {
-            config.frameSemantics = .personSegmentationWithDepth
-        } else {
-            print("This device doesn't support segmentation with depth")
-        }
-        customARView.session.run(config)
+        customARView.session.delegate = customARView.self
+
+        customARView.session.run(customARView.defaultConfiguration)
         return customARView
     }
 

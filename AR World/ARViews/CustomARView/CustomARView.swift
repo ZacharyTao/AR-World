@@ -13,11 +13,27 @@ import SwiftUI
 class CustomARView: ARView {
     private var currentStroke: Stroke?
     private var previousPosition: SIMD3<Float>?
+    var isSaveButtonEnabled: Bool = false
+    var alertMessage: String?
 
     @ObservationIgnored @AppStorage("selectedColor") var selectedColor: Color = .white
     @ObservationIgnored @AppStorage("selectedRadius") var selectedRadius: BrushRadius = .medium
     @ObservationIgnored @AppStorage("selectedBrushMaterial") var selectedBrushMaterial: BrushMaterial = .basic
+    
     var document: [Stroke] = []
+
+    // MARK: - Persistence: Saving and Loading
+    let storedData = UserDefaults.standard
+
+    var defaultConfiguration: ARWorldTrackingConfiguration {
+        let config = ARWorldTrackingConfiguration()
+        if type(of: config).supportsFrameSemantics(.sceneDepth) {
+            config.frameSemantics = .personSegmentationWithDepth
+        } else {
+            print("This device doesn't support segmentation with depth")
+        }
+        return config
+    }
 
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         guard let touch = touches.first else { return }
