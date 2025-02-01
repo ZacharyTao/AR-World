@@ -9,21 +9,17 @@ import Foundation
 import RealityKit
 import ARKit
 import SwiftUI
+import SwiftData
 
 extension CustomARView {
     // MARK: - Persistence: Saving and Loading
+    func loadExperience(mapData: Data) {
 
-    func loadExperience(mapID: String) {
-
-        guard let data = storedData.data(forKey: mapID) else {
-            self.alertMessage = "No map data found"
-            return
-        }
-
-        guard let worldMap = try? NSKeyedUnarchiver.unarchivedObject(ofClass: ARWorldMap.self, from: data) else {
+        guard let worldMap = try? NSKeyedUnarchiver.unarchivedObject(ofClass: ARWorldMap.self, from: mapData) else {
             self.alertMessage = "Can't unarchive ARWorldMap from file data"
             return
         }
+        print("Unarchived a world map : \(worldMap.anchors.count)")
 
         //        // Display the snapshot image stored in the world map to aid user in relocalizing.
         //        if let snapshotData = worldMap.snapshotAnchor?.imageData,
@@ -41,14 +37,12 @@ extension CustomARView {
         self.session.run(configuration, options: [.resetTracking, .removeExistingAnchors])
     }
 
-    func saveExperience(mapName: String) {
+    func saveExperience(mapName: String, context: ModelContext) {
         self.session.getCurrentWorldMap { worldMap, _ in
             guard let map = worldMap else {
                 self.alertMessage = "Unable to get current world map, please try again later."
                 return
             }
-
-            // Add a snapshot image indicating where the map was captured.
 
             self.snapshot(saveToHDR: false) { image in
                 guard let image = image else {
@@ -56,29 +50,19 @@ extension CustomARView {
                     return
                 }
 
-                guard let snapshotAnchor = SnapshotAnchor(capturing: self, snapshot: image) else {
-                    print("Failed to get snapshot anchor")
-                    return
-                }
-
-                map.anchors.append(snapshotAnchor)
+//                guard let snapshotAnchor = SnapshotAnchor(capturing: self, snapshot: image) else {
+//                    print("Failed to get snapshot anchor")
+//                    return
+//                }
+//
+//                map.anchors.append(snapshotAnchor)
 
                 do {
-                    let data = try NSKeyedArchiver.archivedData(withRootObject: map, requiringSecureCoding: true)
-
-                    if self.storedData.object(forKey: "map/\(mapName)") == nil {
-                        self.storedData.set(data, forKey: "map/\(mapName)")
-                    } else {
-                        var counter = 1
-                        while true {
-                            let newKey = "map/\(mapName) \(counter)"
-                            if self.storedData.object(forKey: newKey) == nil {
-                                self.storedData.set(data, forKey: newKey)
-                                break
-                            }
-                            counter += 1
-                        }
-                    }
+                    let mapData = try NSKeyedArchiver.archivedData(withRootObject: map, requiringSecureCoding: true)
+                    let imageData = image.jpegData(compressionQuality: 0.7)
+                    
+                    context.insert(SavedMap(name: mapName, map: mapData, snapshot: imageData))
+                    try context.save()
                 } catch {
                     fatalError("Can't save map: \(error.localizedDescription)")
                 }

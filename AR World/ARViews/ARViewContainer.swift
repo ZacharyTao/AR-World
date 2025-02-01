@@ -12,6 +12,13 @@ import ARKit
 struct ARViewContainer: UIViewRepresentable {
     var customARView: CustomARView
     func makeUIView(context: Context) -> ARView {
+
+        guard ARWorldTrackingConfiguration.isSupported else {
+            fatalError("""
+                ARKit/RealityKit is not available on this device. 
+            """)
+        }
+
         customARView.renderOptions.insert([
             .disableHDR,
             .disableGroundingShadows,
@@ -30,6 +37,8 @@ struct ARViewContainer: UIViewRepresentable {
         customARView.addSubview(coachingOverlay)
 
         customARView.session.delegate = customARView.self
+
+        UIApplication.shared.isIdleTimerDisabled = true
 
         customARView.session.run(customARView.defaultConfiguration)
         return customARView

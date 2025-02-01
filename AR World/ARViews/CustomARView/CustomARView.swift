@@ -22,9 +22,6 @@ class CustomARView: ARView {
     
     var document: [Stroke] = []
 
-    // MARK: - Persistence: Saving and Loading
-    let storedData = UserDefaults.standard
-
     var defaultConfiguration: ARWorldTrackingConfiguration {
         let config = ARWorldTrackingConfiguration()
         if type(of: config).supportsFrameSemantics(.sceneDepth) {

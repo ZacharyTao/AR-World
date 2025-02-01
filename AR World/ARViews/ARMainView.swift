@@ -8,6 +8,7 @@
 import SwiftUI
 import RealityKit
 import ARKit
+import SwiftData
 
 struct ARMainView: View {
     @State var customARView = CustomARView()
@@ -16,13 +17,13 @@ struct ARMainView: View {
     @State var showPreview = false
     @State var hidePreviewWorkItem: DispatchWorkItem?
     @State var showLibrary = false
-    @State var selectedMapID: String?
     @State var showSaveSheet: Bool = false
     @State var mapName = ""
 
     @AppStorage("isFirstTime") var isFirstTime = true
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.verticalSizeClass) private var verticalSizeClass
+    @Environment(\.modelContext) private var context
 
     var isPortraitMode: Bool {
         horizontalSizeClass == .compact && verticalSizeClass == .regular
@@ -70,14 +71,16 @@ struct ARMainView: View {
                     .zIndex(1)
             }
             .sheet(isPresented: $showLibrary) {
-                LibrarySheet(selectedMapID: $selectedMapID)
+                LibrarySheet()
+                    .environment(customARView)
             }
             .alert("Save map", isPresented: $showSaveSheet) {
                 TextField("Enter map name", text: $mapName)
                 Button("Save") {
-                    customARView.saveExperience(mapName: mapName)
+                    customARView.saveExperience(mapName: mapName, context: context)
                     mapName = ""
                 }
+                .disabled(mapName.isEmpty)
                 Button("Cancel", role: .cancel) {
                     mapName = ""
                 }

@@ -7,54 +7,33 @@
 
 import SwiftUI
 import ARKit
+import SwiftData
 
 struct LibrarySheet: View {
     @Environment(\.dismiss) private var dismiss
-    @Binding var selectedMapID: String?
-    @State private var snapshots: [LibraryItem] = []
-    @State private var showingDeleteAlert = false
-    @State private var itemToDelete: LibraryItem?
-    @State private var isEditing = false
+    @Environment(\.modelContext) private var context
+    @Environment(CustomARView.self) private var customARView
 
-    struct LibraryItem: Identifiable {
-        let id: String
-        let thumbnail: UIImage
-    }
+    @State private var showingDeleteAlert = false
+    @State private var itemToDelete: SavedMap?
+    @State private var isEditing = false
+    @Query private var savedMaps: [SavedMap]
+
+    let columns = [GridItem(.flexible()), GridItem(.flexible())]
 
     var body: some View {
         NavigationStack {
             ScrollView {
-                LazyVGrid(columns: [
-                    GridItem(.flexible()),
-                    GridItem(.flexible())
-                ]) {
-                    ForEach(snapshots) { item in
+                LazyVGrid(columns: columns) {
+                    ForEach(savedMaps) { map in
                         VStack {
-                            ZStack(alignment: .topTrailing) {
-                                Image(uiImage: item.thumbnail)
-                                    .resizable()
-                                    .scaledToFit()
-                                    .clipShape(RoundedRectangle(cornerRadius: 8))
-
-                                if isEditing {
-                                    Button {
-                                        itemToDelete = item
-                                        showingDeleteAlert = true
-                                    } label: {
-                                        Image(systemName: "minus.circle.fill")
-                                            .foregroundColor(.red)
-                                            .background(Color.white.clipShape(Circle()))
-                                            .padding(5)
-                                    }
-                                }
-                            }
-
-                            Text(item.id)
+                            displayMapImage(map: map)
+                            Text(map.name)
                         }
                         .padding(10)
                         .onTapGesture {
                             if !isEditing {
-                                selectedMapID = item.id
+                                customARView.loadExperience(mapData: map.map)
                                 dismiss()
                             }
                         }
@@ -71,47 +50,51 @@ struct LibrarySheet: View {
                     }
                 }
             }
-            .alert("Delete Map", isPresented: $showingDeleteAlert, presenting: itemToDelete) { item in
+            .alert("Delete Map", isPresented: $showingDeleteAlert, presenting: itemToDelete) { _ in
                 Button("Delete", role: .destructive) {
-                    deleteMap(item)
+                    if let itemToDelete {
+                        withAnimation {
+                            context.delete(itemToDelete)
+                            try? context.save()
+                        }
+                    }
                 }
                 Button("Cancel", role: .cancel) {}
             } message: { _ in
                 Text("Are you sure you want to delete this map?")
             }
-            .onAppear {
-                loadSnapshots()
+        }
+    }
+
+    @ViewBuilder
+    func deleteButton(map: SavedMap) -> some View {
+        if isEditing {
+            Button {
+                itemToDelete = map
+                showingDeleteAlert = true
+            } label: {
+                Image(systemName: "minus.circle.fill")
+                    .foregroundColor(.red)
+                    .background(Color.white.clipShape(Circle()))
+                    .padding(5)
             }
         }
     }
 
-    private func loadSnapshots() {
-        let userDefaults = UserDefaults.standard
-        let prefix = "map/"
-
-        let allKeys = userDefaults.dictionaryRepresentation().keys
-        let mapKeys = allKeys.filter { $0.hasPrefix(prefix) }
-
-        snapshots = []
-        for key in mapKeys {
-            if let data = userDefaults.data(forKey: key),
-               let worldMap = try? NSKeyedUnarchiver.unarchivedObject(ofClass: ARWorldMap.self, from: data),
-               let snapshotAnchor = worldMap.anchors.first(where: { $0 is SnapshotAnchor }) as? SnapshotAnchor,
-               let image = UIImage(data: snapshotAnchor.imageData) {
-                let displayName = String(key.dropFirst(prefix.count))
-                snapshots.append(LibraryItem(id: displayName, thumbnail: image))
-            }
+    @ViewBuilder
+    func displayMapImage(map: SavedMap) -> some View {
+        let size = CGSize(width: 200, height: 200)
+        DownsizedImageView(image: UIImage(data: map.snapshot ?? Data()), size: size) { image in
+            image
+                .resizable()
+                .scaledToFit()
+                .clipShape(RoundedRectangle(cornerRadius: 8))
         }
-    }
-
-    private func deleteMap(_ item: LibraryItem) {
-        withAnimation {
-            UserDefaults.standard.removeObject(forKey: "map/\(item.id)")
-            loadSnapshots()
-        }
+        .overlay(deleteButton(map: map), alignment: .topTrailing)
     }
 }
 
 #Preview {
-    LibrarySheet(selectedMapID: .constant(""))
+    LibrarySheet()
+        .environment(CustomARView())
 }

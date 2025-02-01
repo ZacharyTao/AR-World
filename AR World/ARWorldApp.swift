@@ -13,5 +13,6 @@ struct ARWorldApp: App {
         WindowGroup {
             ARMainView()
         }
+        .modelContainer(for: SavedMap.self)
     }
 }
