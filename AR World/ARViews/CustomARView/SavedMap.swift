@@ -13,10 +13,13 @@ final class SavedMap {
     @Attribute(.unique) var name: String
     @Attribute(.externalStorage) var map: Data
     @Attribute(.externalStorage) var snapshot: Data?
+    @Attribute(.externalStorage) var strokes: [StrokeData]
 
-    init(name: String, map: Data, snapshot: Data?) {
+    init(name: String, map: Data, snapshot: Data?, strokes: [StrokeData]) {
         self.name = name
         self.map = map
         self.snapshot = snapshot
+        self.strokes = strokes
     }
 }
+

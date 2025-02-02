@@ -14,6 +14,7 @@ class Stroke {
     let radius: Float
     var points: [SIMD3<Float>]
     var material: Material
+    var brushMaterial: BrushMaterial
     let startSphereEntity: ModelEntity
     let endSphereEntity: ModelEntity
     let segments: Int
@@ -24,6 +25,7 @@ class Stroke {
         self.radius = radius
         self.points = [position]
         self.segments = segments
+        self.brushMaterial = material
         switch material {
         case .basic:
             self.material = UnlitMaterial(color: color)
@@ -36,7 +38,7 @@ class Stroke {
         self.endSphereEntity = startSphereEntity.clone(recursive: false)
         startSphereEntity.position = position
     }
-    
+
     func updateStroke(at position: SIMD3<Float>) {
         points.append(position)
         anchor.children.removeAll()
@@ -48,37 +50,37 @@ class Stroke {
             return
         }
     }
-    
+
     func updateStroke(at positions: [SIMD3<Float>]) {
         for position in positions {
             updateStroke(at: position)
         }
     }
-    
+
     func generateStrokeEntity() throws -> ModelEntity {
         if points.count <= 3 {
             return ModelEntity()
         }
-        
+
         let tubeMesh = try generateTubeMesh()
         let tubeEntity = ModelEntity(mesh: tubeMesh, materials: [material])
         endSphereEntity.position = points.last!
-        
+
         let parentEntity = ModelEntity()
         parentEntity.addChild(tubeEntity)
         parentEntity.addChild(startSphereEntity)
         parentEntity.addChild(endSphereEntity)
-        
+
         return parentEntity
     }
-    
+
     func generateTubeMesh() throws -> MeshResource {
         guard points.count >= 2 else { return try MeshResource.generate(from: []) }
         var vertices: [SIMD3<Float>] = []
         var normals: [SIMD3<Float>] = []
         var uvs: [SIMD2<Float>] = []
         var indices: [UInt32] = []
-        
+
         let pointCount = points.count
 
         // swiftlint:disable identifier_name
@@ -88,7 +90,7 @@ class Stroke {
             let up = SIMD3<Float>(0, 1, 0)
             let right = normalize(cross(direction, up))
             let realUp = normalize(cross(right, direction))
-            
+
             for j in 0..<segments {
                 let angle = Float(j) / Float(segments) * 2 * .pi
                 let x = cos(angle)
@@ -96,7 +98,7 @@ class Stroke {
                 let circlePoint = point + radius * (x * right + y * realUp)
                 let normal = normalize(circlePoint - point)
                 let uv = SIMD2<Float>(Float(index) / Float(pointCount - 1), Float(j) / Float(segments))
-                
+
                 vertices.append(circlePoint)
                 normals.append(normal)
                 uvs.append(uv)
@@ -108,7 +110,7 @@ class Stroke {
                 let nextJ = (j + 1) % segments
                 let currentRow = i * segments
                 let nextRow = (i + 1) * segments
-                
+
                 indices.append(contentsOf: [
                     UInt32(currentRow + j), UInt32(nextRow + j), UInt32(nextRow + nextJ),
                     UInt32(currentRow + j), UInt32(nextRow + nextJ), UInt32(currentRow + nextJ)
@@ -116,19 +118,19 @@ class Stroke {
             }
         }
         // swiftlint:enable identifier_name
-        
+
         var descriptor = MeshDescriptor()
         descriptor.positions = MeshBuffers.Positions(vertices)
         descriptor.normals = MeshBuffers.Normals(normals)
         descriptor.textureCoordinates = MeshBuffers.TextureCoordinates(uvs)
         descriptor.primitives = .triangles(indices)
-        
+
         return try MeshResource.generate(from: [descriptor])
     }
 }
 
 enum BrushRadius: String, Codable, CaseIterable {
-    case thin 
+    case thin
     case medium
     case wide
 
@@ -148,4 +150,42 @@ enum BrushMaterial: String, Codable, CaseIterable {
     case basic
     case realistic
     case metallic
+}
+
+extension Stroke {
+    /// Converts a Stroke into a codable representation.
+    func toStrokeData() -> StrokeData {
+        return StrokeData(
+            color: ColorData(self.color),
+            startPosition: Vector3(self.points.first ?? SIMD3<Float>(0, 0, 0)),
+            radius: self.radius,
+            points: self.points.map { Vector3($0) },
+            material: self.brushMaterial
+        )
+    }
+
+    /// Convenience initializer to create a Stroke from its data representation.
+    convenience init(strokeData: StrokeData) {
+        // Use the first point as the anchor position.
+        let startPosition = strokeData.points.first?.simd ?? SIMD3<Float>(0, 0, 0)
+        self.init(
+            color: strokeData.color.uiColor,
+            at: startPosition,
+            radius: strokeData.radius,
+            material: strokeData.material
+        )
+
+        // Overwrite the default points with the saved points.
+        self.points = strokeData.points.map { $0.simd }
+
+        // Regenerate the stroke’s mesh.
+        do {
+            let entity = try self.generateStrokeEntity()
+            // Remove any children and add the new geometry.
+            self.anchor.children.removeAll()
+            self.anchor.addChild(entity, preservingWorldTransform: true)
+        } catch {
+            print("Error regenerating stroke entity: \(error)")
+        }
+    }
 }

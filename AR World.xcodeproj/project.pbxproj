@@ -55,7 +55,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				EF20D50C2CAC84B400139F8D /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				EFBB4D222D3AD30E00CF54B7 /* AR World */,
@@ -90,7 +89,6 @@
 			);
 			mainGroup = EF2EC9BF2C8CE646004CF8FD;
 			packageReferences = (
-				EF20D50A2CAC848900139F8D /* XCRemoteSwiftPackageReference "SwiftLintPlugins" */,
 			);
 			productRefGroup = EF2EC9C92C8CE646004CF8FD /* Products */;
 			projectDirPath = "";
@@ -120,13 +118,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXTargetDependency section */
-		EF20D50C2CAC84B400139F8D /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			productRef = EF20D50B2CAC84B400139F8D /* SwiftLintBuildToolPlugin */;
-		};
-/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		EF2EC9D42C8CE646004CF8FD /* Debug */ = {
@@ -348,25 +339,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCRemoteSwiftPackageReference section */
-		EF20D50A2CAC848900139F8D /* XCRemoteSwiftPackageReference "SwiftLintPlugins" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/SimplyDanny/SwiftLintPlugins";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 0.57.0;
-			};
-		};
-/* End XCRemoteSwiftPackageReference section */
-
-/* Begin XCSwiftPackageProductDependency section */
-		EF20D50B2CAC84B400139F8D /* SwiftLintBuildToolPlugin */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = EF20D50A2CAC848900139F8D /* XCRemoteSwiftPackageReference "SwiftLintPlugins" */;
-			productName = "plugin:SwiftLintBuildToolPlugin";
-		};
-/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = EF2EC9C02C8CE646004CF8FD /* Project object */;
 }

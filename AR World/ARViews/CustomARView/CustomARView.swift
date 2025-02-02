@@ -75,7 +75,7 @@ class CustomARView: ARView {
         let dist = distance(targetPosition, previousPosition)
         let threshold = Float(0.001)
 
-        print("Distance: \(dist), Threshold: \(threshold), \(dist > threshold ? "✅" : "🟥")")
+        // print("Distance: \(dist), Threshold: \(threshold), \(dist > threshold ? "✅" : "🟥")")
 
         if dist > threshold {
             currentStroke.updateStroke(at: targetPosition)
