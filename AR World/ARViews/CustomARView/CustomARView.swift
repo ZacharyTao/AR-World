@@ -19,7 +19,7 @@ class CustomARView: ARView {
     @ObservationIgnored @AppStorage("selectedColor") var selectedColor: Color = .white
     @ObservationIgnored @AppStorage("selectedRadius") var selectedRadius: BrushRadius = .medium
     @ObservationIgnored @AppStorage("selectedBrushMaterial") var selectedBrushMaterial: BrushMaterial = .basic
-    
+
     var document: [Stroke] = []
 
     var defaultConfiguration: ARWorldTrackingConfiguration {

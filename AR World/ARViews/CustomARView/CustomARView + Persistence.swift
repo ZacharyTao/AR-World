@@ -30,7 +30,7 @@ extension CustomARView {
         //        }
 
         // Remove the snapshot anchor from the world map since we do not need it in the scene.
-        worldMap.anchors.removeAll(where: { $0 is SnapshotAnchor })
+        // worldMap.anchors.removeAll(where: { $0 is SnapshotAnchor })
 
         let configuration = self.defaultConfiguration
         configuration.initialWorldMap = worldMap
