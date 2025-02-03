@@ -21,11 +21,11 @@ extension ARMainView {
                   attachmentAnchor: isPortraitMode ? .point(.top) : .point(.leading),
                   arrowEdge: isPortraitMode ? .bottom : .trailing, content: {
             brushSelectionView
-                .presentationBackground(.ultraThinMaterial)
+                .presentationBackground(customARView.selectedColor.selectedMenuBackground)
                 .presentationCompactAdaptation(.popover)
         })
     }
-    
+
     var brushSelectionView: some View {
         HStack(spacing: 3) {
             VStack(spacing: 5) {
@@ -35,7 +35,7 @@ extension ARMainView {
                 } label: {
                     RoundedRectangle(cornerRadius: 10)
                         .frame(width: 60, height: 60)
-                        .foregroundStyle(.thinMaterial)
+                        .foregroundStyle(customARView.selectedColor.selectedBackground)
                         .opacity(customARView.selectedRadius == .thin ? 1 : 0)
                         .overlay {
                             RoundedRectangle(cornerRadius: 10)
@@ -50,7 +50,7 @@ extension ARMainView {
                 } label: {
                     RoundedRectangle(cornerRadius: 10)
                         .frame(width: 60, height: 60)
-                        .foregroundStyle(.thinMaterial)
+                        .foregroundStyle(customARView.selectedColor.selectedBackground)
                         .opacity(customARView.selectedRadius == .medium ? 1 : 0)
                         .overlay {
                             RoundedRectangle(cornerRadius: 10)
@@ -65,7 +65,7 @@ extension ARMainView {
                 } label: {
                     RoundedRectangle(cornerRadius: 10)
                         .frame(width: 60, height: 60)
-                        .foregroundStyle(.thinMaterial)
+                        .foregroundStyle(customARView.selectedColor.selectedBackground)
                         .opacity(customARView.selectedRadius == .wide ? 1 : 0)
                         .overlay {
                             RoundedRectangle(cornerRadius: 10)
@@ -82,7 +82,7 @@ extension ARMainView {
                 } label: {
                     RoundedRectangle(cornerRadius: 10)
                         .frame(width: 100, height: 60)
-                        .foregroundStyle(.thinMaterial)
+                        .foregroundStyle(customARView.selectedColor.selectedBackground)
                         .opacity(customARView.selectedBrushMaterial == .basic ? 1 : 0)
                         .overlay {
                             Text("Basic")
@@ -96,7 +96,7 @@ extension ARMainView {
                 } label: {
                     RoundedRectangle(cornerRadius: 10)
                         .frame(width: 100, height: 60)
-                        .foregroundStyle(.thinMaterial)
+                        .foregroundStyle(customARView.selectedColor.selectedBackground)
                         .opacity(customARView.selectedBrushMaterial == .realistic ? 1 : 0)
                         .overlay {
                             Text("Realistic")
@@ -110,7 +110,7 @@ extension ARMainView {
                 } label: {
                     RoundedRectangle(cornerRadius: 10)
                         .frame(width: 100, height: 60)
-                        .foregroundStyle(.thinMaterial)
+                        .foregroundStyle(customARView.selectedColor.selectedBackground)
                         .opacity(customARView.selectedBrushMaterial == .metallic ? 1 : 0)
                         .overlay {
                             Text("Metallic")
@@ -120,5 +120,27 @@ extension ARMainView {
             }
         }
         .padding(4)
+    }
+}
+
+extension Color {
+    var isDark: Bool {
+        let uiColor = UIColor(self)
+        var red: CGFloat = 0, green: CGFloat = 0, blue: CGFloat = 0
+        uiColor.getRed(&red, green: &green, blue: &blue, alpha: nil)
+        let brightness = (red * 299 + green * 587 + blue * 114) / 1000
+        return brightness < 0.5
+    }
+
+    var selectedBackground: Color {
+        isDark ? Color.white.opacity(0.9) : Color.gray.opacity(0.2)
+    }
+
+    var selectedMenuBackground: Color {
+        isDark ? Color.gray.opacity(0.03) : Color.gray.opacity(0.1)
+    }
+
+    var contrast: Color {
+        isDark ? .white : .black
     }
 }
