@@ -63,6 +63,7 @@ class CustomARView: ARView {
                                points: [targetPosition],
                                radius: selectedRadius.getValue(),
                                material: selectedBrushMaterial)
+        session.add(anchor: currentStroke!.arAnchor)
         scene.addAnchor(currentStroke!.anchor)
     }
 
@@ -100,5 +101,15 @@ class CustomARView: ARView {
         while !document.isEmpty {
             undoLastStroke()
         }
+    }
+}
+
+extension CustomARView {
+    func pauseSession() {
+        self.session.pause()
+    }
+
+    func resumeSession() {
+        self.session.run(session.configuration ?? defaultConfiguration)
     }
 }

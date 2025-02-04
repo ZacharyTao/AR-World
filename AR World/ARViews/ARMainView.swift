@@ -70,7 +70,7 @@ struct ARMainView: View {
                 screenShotPreview
                     .zIndex(1)
             }
-            .sheet(isPresented: $showLibrary) {
+            .fullScreenCover(isPresented: $showLibrary) {
                 LibrarySheet()
                     .environment(customARView)
             }

@@ -10,10 +10,7 @@ import SwiftUI
 struct DownsizedImageView<Content: View>: View {
     var image: UIImage?
     var size: CGSize
-    // Just like how AsyncImage works
     @ViewBuilder var content: (Image) -> Content
-
-    // View Properties
     @State private var downsizedImageView: Image?
 
     var body: some View {
@@ -28,12 +25,10 @@ struct DownsizedImageView<Content: View>: View {
         }
         .onChange(of: image) { oldValue, newValue in
             guard oldValue != newValue else { return }
-            /// Dynamic Image Changes
             createDownsizedImage(newValue)
         }
     }
 
-    /// Creating Downsized Image
     private func createDownsizedImage(_ image: UIImage?) {
         guard let image else { return }
         let aspectSize = image.size.aspectFit(size)
@@ -44,7 +39,6 @@ struct DownsizedImageView<Content: View>: View {
                 image.draw(in: .init(origin: .zero, size: aspectSize))
             }
 
-            /// Updating UI on Main Thread
             await MainActor.run {
                 downsizedImageView = .init(uiImage: resizedImage)
             }
@@ -53,7 +47,6 @@ struct DownsizedImageView<Content: View>: View {
 }
 
 extension CGSize {
-    /// This function will return a new size that fits the given size in an aspect ratio
     func aspectFit(_ to: CGSize) -> CGSize {
         let scaleX = to.width / self.width
         let scaleY = to.height / self.height

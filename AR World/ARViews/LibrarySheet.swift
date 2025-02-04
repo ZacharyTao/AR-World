@@ -44,6 +44,12 @@ struct LibrarySheet: View {
             .navigationTitle("Library")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    Button("Cancel") {
+                        customARView.resumeSession()
+                        dismiss()
+                    }
+                }
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button(isEditing ? "Done" : "Edit") {
                         isEditing.toggle()
@@ -63,6 +69,9 @@ struct LibrarySheet: View {
             } message: { _ in
                 Text("Are you sure you want to delete this map?")
             }
+        }
+        .onAppear {
+            customARView.pauseSession()
         }
     }
 

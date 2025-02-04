@@ -17,18 +17,26 @@ extension CustomARView {
             self.alertMessage = "Can't unarchive ARWorldMap from file data"
             return
         }
-        print("Unarchived a world map : \(worldMap.anchors.count)")
 
-        let strokes = strokeData.map { Stroke(strokeData: $0) }
+        var strokes: [Stroke] = []
+        for savedAnchor in worldMap.anchors {
+            if let savedAnchorName = savedAnchor.name,
+               savedAnchorName.hasPrefix("stroke_"),
+               let data = strokeData.first(where: { $0.anchorName == savedAnchorName }) {
+                strokes.append(Stroke(strokeData: data, persistedAnchor: savedAnchor))
+            }
+        }
+
         let configuration = self.defaultConfiguration
 
         configuration.initialWorldMap = worldMap
         self.session.run(configuration, options: [.resetTracking, .removeExistingAnchors])
 
-        scene.anchors.removeAll()
+        // clearAllStrokes()
         document.removeAll()
 
         for stroke in strokes {
+            //session.add(anchor: stroke.arAnchor)
             scene.addAnchor(stroke.anchor)
             document.append(stroke)
         }

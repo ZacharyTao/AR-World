@@ -11,16 +11,48 @@ import ARKit
 class Stroke {
     var color: UIColor
     let anchor: AnchorEntity
+    let arAnchor: ARAnchor
     let radius: Float
     var points: [SIMD3<Float>]
     var brushMaterial: BrushMaterial
 
     init(color: UIColor, points: [SIMD3<Float>], radius: Float, material: BrushMaterial) {
         self.color = color
-        self.anchor = AnchorEntity(world: points.first!)
+
+        let worldPosition = points.first!
+        var transform = matrix_identity_float4x4
+        transform.columns.3 = SIMD4<Float>(worldPosition.x, worldPosition.y, worldPosition.z, 1.0)
+        let strokeID = UUID().uuidString
+        print("New Stroke ID: stroke_\(strokeID)")
+
+        self.arAnchor = ARAnchor(name: "stroke_\(strokeID)", transform: transform)
+        self.anchor = AnchorEntity(anchor: arAnchor)
         self.radius = radius
         self.points = points
         self.brushMaterial = material
+        let startSphereEntity = ModelEntity(
+            mesh: .generateSphere(radius: radius),
+            materials: [brushMaterial.getMaterial(color: color)]
+        )
+
+        startSphereEntity.position = SIMD3<Float>(0, 0, 0)
+        anchor.addChild(startSphereEntity)
+    }
+
+    init(strokeData: StrokeData, persistedAnchor: ARAnchor) {
+        self.color = strokeData.color.uiColor
+        self.arAnchor = persistedAnchor
+        self.anchor = AnchorEntity(anchor: arAnchor)
+        self.radius = strokeData.radius
+        self.points = strokeData.points.map { $0.simd }
+        self.brushMaterial = strokeData.material
+
+        do {
+            let entity = try generateStrokeEntity()
+            anchor.addChild(entity, preservingWorldTransform: true)
+        } catch {
+            print("Failed to generate new stroke entity")
+        }
     }
 
     func updateStroke(at position: SIMD3<Float>) {
@@ -36,19 +68,23 @@ class Stroke {
     }
 
     func generateStrokeEntity() throws -> ModelEntity {
-        if points.count <= 3 {
-            return ModelEntity()
-        }
-
         let startSphereEntity = ModelEntity(mesh: .generateSphere(radius: radius), materials: [brushMaterial.getMaterial(color: color)])
         let endSphereEntity = startSphereEntity.clone(recursive: false)
+        let parentEntity = ModelEntity()
+
+        if points.count < 1 {
+            return ModelEntity()
+        } else if points.count < 4 {
+            startSphereEntity.position = points.first!
+            return startSphereEntity
+        }
+
         startSphereEntity.position = points.first!
         endSphereEntity.position = points.last!
 
         let tubeMesh = try generateTubeMesh()
         let tubeEntity = ModelEntity(mesh: tubeMesh, materials: [brushMaterial.getMaterial(color: color)])
 
-        let parentEntity = ModelEntity()
         parentEntity.addChild(tubeEntity)
         parentEntity.addChild(startSphereEntity)
         parentEntity.addChild(endSphereEntity)
@@ -58,7 +94,7 @@ class Stroke {
 
     func generateTubeMesh() throws -> MeshResource {
         let segments = 8
-        guard points.count >= 2 else { return try MeshResource.generate(from: []) }
+        guard points.count >= 3 else { return try MeshResource.generate(from: []) }
         var vertices: [SIMD3<Float>] = []
         var normals: [SIMD3<Float>] = []
         var uvs: [SIMD2<Float>] = []
@@ -67,7 +103,14 @@ class Stroke {
         let pointCount = points.count
 
         for (index, point) in points.enumerated() {
-            let nextPoint = index < pointCount - 1 ? points[index + 1] : point + (point - points[index - 1])
+            let nextPoint: SIMD3<Float>
+            if index < pointCount - 1 {
+                nextPoint = points[index + 1]
+            } else if index > 0 {
+                nextPoint = point + (point - points[index - 1])
+            } else {
+                nextPoint = point
+            }
             let direction = normalize(nextPoint - point)
             let up = SIMD3<Float>(0, 1, 0)
             let right = normalize(cross(direction, up))
@@ -151,27 +194,8 @@ extension Stroke {
             color: ColorData(self.color),
             radius: self.radius,
             points: self.points.map { Vector3($0) },
-            material: self.brushMaterial
+            material: self.brushMaterial,
+            anchorName: self.arAnchor.name ?? ""
         )
-    }
-
-    /// Convenience initializer to create a Stroke from its data representation.
-    convenience init(strokeData: StrokeData) {
-        self.init(
-            color: strokeData.color.uiColor,
-            points: strokeData.points.map { $0.simd },
-            radius: strokeData.radius,
-            material: strokeData.material
-        )
-
-        // Regenerate the stroke’s mesh.
-        do {
-            let entity = try self.generateStrokeEntity()
-            // Remove any children and add the new geometry.
-            self.anchor.children.removeAll()
-            self.anchor.addChild(entity, preservingWorldTransform: true)
-        } catch {
-            print("Error regenerating stroke entity: \(error)")
-        }
     }
 }
