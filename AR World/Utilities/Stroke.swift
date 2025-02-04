@@ -13,10 +13,7 @@ class Stroke {
     let anchor: AnchorEntity
     let radius: Float
     var points: [SIMD3<Float>]
-    var material: Material
     var brushMaterial: BrushMaterial
-    let startSphereEntity: ModelEntity
-    let endSphereEntity: ModelEntity
 
     init(color: UIColor, at position: SIMD3<Float>, radius: Float, material: BrushMaterial) {
         self.color = color
@@ -24,17 +21,6 @@ class Stroke {
         self.radius = radius
         self.points = [position]
         self.brushMaterial = material
-        switch material {
-        case .basic:
-            self.material = UnlitMaterial(color: color)
-        case .realistic:
-            self.material = SimpleMaterial(color: color, roughness: 0.8, isMetallic: true)
-        case .metallic:
-            self.material = SimpleMaterial(color: color, isMetallic: true)
-        }
-        self.startSphereEntity = ModelEntity(mesh: .generateSphere(radius: radius), materials: [self.material])
-        self.endSphereEntity = startSphereEntity.clone(recursive: false)
-        startSphereEntity.position = position
     }
 
     func updateStroke(at position: SIMD3<Float>) {
@@ -60,9 +46,13 @@ class Stroke {
             return ModelEntity()
         }
 
-        let tubeMesh = try generateTubeMesh()
-        let tubeEntity = ModelEntity(mesh: tubeMesh, materials: [material])
+        let startSphereEntity = ModelEntity(mesh: .generateSphere(radius: radius), materials: [brushMaterial.getMaterial(color: color)])
+        let endSphereEntity = startSphereEntity.clone(recursive: false)
+        startSphereEntity.position = points.first!
         endSphereEntity.position = points.last!
+
+        let tubeMesh = try generateTubeMesh()
+        let tubeEntity = ModelEntity(mesh: tubeMesh, materials: [brushMaterial.getMaterial(color: color)])
 
         let parentEntity = ModelEntity()
         parentEntity.addChild(tubeEntity)
@@ -82,7 +72,6 @@ class Stroke {
 
         let pointCount = points.count
 
-        // swiftlint:disable identifier_name
         for (index, point) in points.enumerated() {
             let nextPoint = index < pointCount - 1 ? points[index + 1] : point + (point - points[index - 1])
             let direction = normalize(nextPoint - point)
@@ -116,7 +105,6 @@ class Stroke {
                 ])
             }
         }
-        // swiftlint:enable identifier_name
 
         var descriptor = MeshDescriptor()
         descriptor.positions = MeshBuffers.Positions(vertices)
@@ -149,6 +137,17 @@ enum BrushMaterial: String, Codable, CaseIterable {
     case basic
     case realistic
     case metallic
+
+    func getMaterial(color: UIColor) -> Material {
+        switch self {
+        case .basic:
+            UnlitMaterial(color: color)
+        case .realistic:
+            SimpleMaterial(color: color, roughness: 0.8, isMetallic: true)
+        case .metallic:
+            SimpleMaterial(color: color, isMetallic: true)
+        }
+    }
 }
 
 extension Stroke {

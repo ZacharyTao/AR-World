@@ -5,7 +5,6 @@
 //  Created by Zachary Tao on 1/31/25.
 //
 
-// swiftlint:disable identifier_name
 import SwiftUI
 
 struct DownsizedImageView<Content: View>: View {
@@ -63,4 +62,3 @@ extension CGSize {
         return .init(width: aspectRatio * width, height: aspectRatio * height)
     }
 }
-// swiftlint:enable identifier_name
