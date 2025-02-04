@@ -15,29 +15,23 @@ class Stroke {
     var points: [SIMD3<Float>]
     var brushMaterial: BrushMaterial
 
-    init(color: UIColor, at position: SIMD3<Float>, radius: Float, material: BrushMaterial) {
+    init(color: UIColor, points: [SIMD3<Float>], radius: Float, material: BrushMaterial) {
         self.color = color
-        self.anchor = AnchorEntity(world: position)
+        self.anchor = AnchorEntity(world: points.first!)
         self.radius = radius
-        self.points = [position]
+        self.points = points
         self.brushMaterial = material
     }
 
     func updateStroke(at position: SIMD3<Float>) {
-        points.append(position)
-        anchor.children.removeAll()
         do {
+            points.append(position)
+            anchor.children.removeAll()
             let entity = try generateStrokeEntity()
             anchor.addChild(entity, preservingWorldTransform: true)
         } catch {
             print("Failed to generate mesh: \(error.localizedDescription)")
             return
-        }
-    }
-
-    func updateStroke(at positions: [SIMD3<Float>]) {
-        for position in positions {
-            updateStroke(at: position)
         }
     }
 
@@ -163,17 +157,12 @@ extension Stroke {
 
     /// Convenience initializer to create a Stroke from its data representation.
     convenience init(strokeData: StrokeData) {
-        // Use the first point as the anchor position.
-        let startPosition = strokeData.points.first?.simd ?? SIMD3<Float>(0, 0, 0)
         self.init(
             color: strokeData.color.uiColor,
-            at: startPosition,
+            points: strokeData.points.map { $0.simd },
             radius: strokeData.radius,
             material: strokeData.material
         )
-
-        // Overwrite the default points with the saved points.
-        self.points = strokeData.points.map { $0.simd }
 
         // Regenerate the stroke’s mesh.
         do {
