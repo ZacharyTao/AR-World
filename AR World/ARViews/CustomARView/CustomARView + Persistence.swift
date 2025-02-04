@@ -12,8 +12,6 @@ import SwiftUI
 import SwiftData
 
 extension CustomARView {
-    // MARK: - Persistence: Saving and Loading
-    // FIXME: temporarily disabled due to RealityKit lack of support for persistence in ARView
     func loadExperience(mapData: Data, strokeData: [StrokeData]) {
         guard let worldMap = try? NSKeyedUnarchiver.unarchivedObject(ofClass: ARWorldMap.self, from: mapData) else {
             self.alertMessage = "Can't unarchive ARWorldMap from file data"

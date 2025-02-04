@@ -157,7 +157,6 @@ extension Stroke {
     func toStrokeData() -> StrokeData {
         return StrokeData(
             color: ColorData(self.color),
-            startPosition: Vector3(self.points.first ?? SIMD3<Float>(0, 0, 0)),
             radius: self.radius,
             points: self.points.map { Vector3($0) },
             material: self.brushMaterial
