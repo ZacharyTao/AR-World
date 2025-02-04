@@ -17,14 +17,12 @@ class Stroke {
     var brushMaterial: BrushMaterial
     let startSphereEntity: ModelEntity
     let endSphereEntity: ModelEntity
-    let segments: Int
 
-    init(color: UIColor, at position: SIMD3<Float>, radius: Float, material: BrushMaterial, segments: Int = 8) {
+    init(color: UIColor, at position: SIMD3<Float>, radius: Float, material: BrushMaterial) {
         self.color = color
         self.anchor = AnchorEntity(world: position)
         self.radius = radius
         self.points = [position]
-        self.segments = segments
         self.brushMaterial = material
         switch material {
         case .basic:
@@ -75,6 +73,7 @@ class Stroke {
     }
 
     func generateTubeMesh() throws -> MeshResource {
+        let segments = 8
         guard points.count >= 2 else { return try MeshResource.generate(from: []) }
         var vertices: [SIMD3<Float>] = []
         var normals: [SIMD3<Float>] = []
