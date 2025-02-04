@@ -33,7 +33,7 @@ struct LibrarySheet: View {
                         .padding(10)
                         .onTapGesture {
                             if !isEditing {
-                                customARView.loadExperience(mapData: map.map, strokeData: map.strokes)
+                                customARView.loadExperience(mapData: map.map, strokeDatas: map.strokes)
                                 dismiss()
                             }
                         }

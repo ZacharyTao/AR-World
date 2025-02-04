@@ -12,7 +12,7 @@ import SwiftUI
 import SwiftData
 
 extension CustomARView {
-    func loadExperience(mapData: Data, strokeData: [StrokeData]) {
+    func loadExperience(mapData: Data, strokeDatas: [StrokeData]) {
         guard let worldMap = try? NSKeyedUnarchiver.unarchivedObject(ofClass: ARWorldMap.self, from: mapData) else {
             self.alertMessage = "Can't unarchive ARWorldMap from file data"
             return
@@ -22,8 +22,8 @@ extension CustomARView {
         for savedAnchor in worldMap.anchors {
             if let savedAnchorName = savedAnchor.name,
                savedAnchorName.hasPrefix("stroke_"),
-               let data = strokeData.first(where: { $0.anchorName == savedAnchorName }) {
-                strokes.append(Stroke(strokeData: data, persistedAnchor: savedAnchor))
+               let strokeData = strokeDatas.first(where: { $0.anchorName == savedAnchorName }) {
+                strokes.append(Stroke(strokeData: strokeData, persistedAnchor: savedAnchor))
             }
         }
 
@@ -32,11 +32,10 @@ extension CustomARView {
         configuration.initialWorldMap = worldMap
         self.session.run(configuration, options: [.resetTracking, .removeExistingAnchors])
 
-        // clearAllStrokes()
-        document.removeAll()
+        clearAllStrokes()
 
         for stroke in strokes {
-            //session.add(anchor: stroke.arAnchor)
+            session.add(anchor: stroke.arAnchor)
             scene.addAnchor(stroke.anchor)
             document.append(stroke)
         }
