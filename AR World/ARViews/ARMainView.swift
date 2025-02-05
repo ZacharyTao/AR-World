@@ -37,19 +37,20 @@ struct ARMainView: View {
                 ARViewContainer(customARView: customARView)
                     .edgesIgnoringSafeArea(.all)
 
-                optionButton
-                    .zIndex(1)
-
                 if customARView.isThumbnailImageHidden {
+                    optionButton
+                        .zIndex(1)
                     buttonView
+                } else {
+                    resetButton
+                    thumbnailImage
+                        .zIndex(2)
                 }
 
                 sessionInfo
-
                 screenShotPreview
                     .zIndex(1)
-                thumbnailImage
-                    .zIndex(2)
+
             }
             .animation(.default, value: customARView.isThumbnailImageHidden)
             .fullScreenCover(isPresented: $showLibrary) {
@@ -88,19 +89,17 @@ struct ARMainView: View {
 
     @ViewBuilder
     var thumbnailImage: some View {
-        if !customARView.isThumbnailImageHidden {
-            if let image = customARView.thumbnailImage {
-                Image(uiImage: image)
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 150)
-                    .cornerRadius(20)
-                    .shadow(radius: 5)
-                    .frame(maxWidth: .infinity,
-                           maxHeight: .infinity,
-                           alignment: .topTrailing)
-                    .padding()
-            }
+        if let image = customARView.thumbnailImage {
+            Image(uiImage: image)
+                .resizable()
+                .scaledToFit()
+                .frame(width: 120)
+                .cornerRadius(20)
+                .shadow(radius: 5)
+                .frame(maxWidth: .infinity,
+                       maxHeight: .infinity,
+                       alignment: .topTrailing)
+                .padding()
         }
     }
 

@@ -33,12 +33,11 @@ extension CustomARView {
         } else {
             print("No snapshot image in world map")
         }
-
         let configuration = self.defaultConfiguration
 
         configuration.initialWorldMap = worldMap
         self.session.run(configuration, options: [.resetTracking, .removeExistingAnchors])
-
+        
         clearAllStrokes()
 
         for stroke in strokes {

@@ -119,4 +119,8 @@ extension CustomARView {
     func resumeSession() {
         self.session.run(session.configuration ?? defaultConfiguration)
     }
+
+    func resetSession() {
+        self.session.run(defaultConfiguration, options: [.resetTracking, .removeExistingAnchors])
+    }
 }
