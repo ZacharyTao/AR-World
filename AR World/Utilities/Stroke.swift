@@ -16,27 +16,18 @@ class Stroke {
     var points: [SIMD3<Float>]
     var brushMaterial: BrushMaterial
 
-    init(color: UIColor, points: [SIMD3<Float>], radius: Float, material: BrushMaterial) {
+    init(color: UIColor, anchorPosition: SIMD3<Float>, radius: Float, material: BrushMaterial) {
         self.color = color
-
-        let worldPosition = points.first!
         var transform = matrix_identity_float4x4
-        transform.columns.3 = SIMD4<Float>(worldPosition.x, worldPosition.y, worldPosition.z, 1.0)
+        transform.columns.3 = SIMD4<Float>(anchorPosition.x, anchorPosition.y, anchorPosition.z, 1.0)
         let strokeID = UUID().uuidString
         print("New Stroke ID: stroke_\(strokeID)")
 
         self.arAnchor = ARAnchor(name: "stroke_\(strokeID)", transform: transform)
         self.anchor = AnchorEntity(anchor: arAnchor)
         self.radius = radius
-        self.points = points
+        self.points = []
         self.brushMaterial = material
-        let startSphereEntity = ModelEntity(
-            mesh: .generateSphere(radius: radius),
-            materials: [brushMaterial.getMaterial(color: color)]
-        )
-
-        startSphereEntity.position = SIMD3<Float>(0, 0, 0)
-        anchor.addChild(startSphereEntity)
     }
 
     init(strokeData: StrokeData, persistedAnchor: ARAnchor) {
@@ -45,15 +36,7 @@ class Stroke {
         self.anchor = AnchorEntity(anchor: arAnchor)
         self.radius = strokeData.radius
         self.brushMaterial = strokeData.material
-
-        let anchorTransform = persistedAnchor.transform
-        let inverseAnchorTransform = simd_inverse(anchorTransform)
-
-        self.points = strokeData.points.map { savedPoint in
-            let worldPoint = SIMD4<Float>(savedPoint.x, savedPoint.y, savedPoint.z, 1.0)
-            let localPoint = inverseAnchorTransform * worldPoint
-            return SIMD3<Float>(localPoint.x, localPoint.y, localPoint.z)
-        }
+        self.points = strokeData.points.map { $0.simd }
 
         do {
             let entity = try generateStrokeEntity()
@@ -64,11 +47,16 @@ class Stroke {
     }
 
     func updateStroke(at position: SIMD3<Float>) {
+        let anchorTransform = arAnchor.transform
+        let inverseAnchorTransform = simd_inverse(anchorTransform)
+        let worldPoint = SIMD4<Float>(position.x, position.y, position.z, 1.0)
+        let localPoint4 = inverseAnchorTransform * worldPoint
+        let localPoint = SIMD3<Float>(localPoint4.x, localPoint4.y, localPoint4.z)
         do {
-            points.append(position)
+            points.append(localPoint)
             anchor.children.removeAll()
             let entity = try generateStrokeEntity()
-            anchor.addChild(entity, preservingWorldTransform: true)
+            anchor.addChild(entity)
         } catch {
             print("Failed to generate mesh: \(error.localizedDescription)")
             return

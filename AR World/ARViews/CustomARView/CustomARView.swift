@@ -60,9 +60,10 @@ class CustomARView: ARView {
         else { return }
         previousPosition = targetPosition
         currentStroke = Stroke(color: UIColor(selectedColor),
-                               points: [targetPosition],
+                               anchorPosition: targetPosition,
                                radius: selectedRadius.getValue(),
                                material: selectedBrushMaterial)
+        currentStroke?.updateStroke(at: targetPosition)
         session.add(anchor: currentStroke!.arAnchor)
         scene.addAnchor(currentStroke!.anchor)
     }
