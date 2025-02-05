@@ -126,11 +126,20 @@ class Stroke {
             }
         }
 
+        guard !vertices.isEmpty else {
+            return try MeshResource.generate(from: [])
+        }
+
         for i in 0..<pointCount - 1 {
             for j in 0..<segments {
                 let nextJ = (j + 1) % segments
                 let currentRow = i * segments
                 let nextRow = (i + 1) * segments
+
+                guard currentRow + nextJ < vertices.count,
+                      nextRow + nextJ < vertices.count else {
+                    continue
+                }
 
                 indices.append(contentsOf: [
                     UInt32(currentRow + j), UInt32(nextRow + j), UInt32(nextRow + nextJ),
