@@ -16,7 +16,8 @@ class CustomARView: ARView {
     var isSaveButtonEnabled: Bool = false
     var alertMessage: String?
 
-    var isThumbnailImageHidden: Bool = true
+    var isLoadingMap: Bool = false
+    var isSavingMap: Bool = false
     var thumbnailImage: UIImage?
     var sessionInfoLabel: String?
 

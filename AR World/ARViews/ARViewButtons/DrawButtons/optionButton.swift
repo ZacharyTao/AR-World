@@ -20,11 +20,12 @@ extension ARMainView {
 
             Section {
                 Button {
-                    showSaveSheet.toggle()
+                    // showSaveSheet.toggle()
+                    customARView.isSavingMap = true
                 } label: {
                     Label("Save Drawing", systemImage: "square.and.arrow.down")
                 }
-                .disabled(!customARView.isSaveButtonEnabled)
+                .disabled(customARView.document.isEmpty)
 
                 Button {
                     showLibrary = true

@@ -158,40 +158,6 @@ class Stroke {
     }
 }
 
-enum BrushRadius: String, Codable, CaseIterable {
-    case thin
-    case medium
-    case wide
-
-    func getValue() -> Float {
-        switch self {
-        case .thin:
-            return 0.002
-        case .medium:
-            return 0.006
-        case .wide:
-            return 0.010
-        }
-    }
-}
-
-enum BrushMaterial: String, Codable, CaseIterable {
-    case basic
-    case realistic
-    case metallic
-
-    func getMaterial(color: UIColor) -> Material {
-        switch self {
-        case .basic:
-            UnlitMaterial(color: color)
-        case .realistic:
-            SimpleMaterial(color: color, roughness: 0.8, isMetallic: true)
-        case .metallic:
-            SimpleMaterial(color: color, isMetallic: true)
-        }
-    }
-}
-
 extension Stroke {
     /// Converts a Stroke into a codable representation.
     func toStrokeData() -> StrokeData {

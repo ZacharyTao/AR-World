@@ -19,35 +19,45 @@ extension CustomARView: ARSessionDelegate {
 
     func session(_ session: ARSession, didUpdate frame: ARFrame) {
         // Enable Save button only when the mapping status is good and an object has been placed
+
         switch frame.worldMappingStatus {
         case .extending, .mapped:
             isSaveButtonEnabled = !document.isEmpty
         default:
             isSaveButtonEnabled = false
         }
+
         updateSessionInfoLabel(for: frame, trackingState: frame.camera.trackingState)
+
+        if isSavingMap {
+            switch frame.worldMappingStatus {
+            case .extending, .mapped:
+                isSaveButtonEnabled = true
+                sessionInfoLabel = "Tap the save button to capture and save the current map."
+            default:
+                isSaveButtonEnabled = false
+                sessionInfoLabel = "Move around to map the environment and enable saving."
+            }
+        }
+
     }
 
     private func updateSessionInfoLabel(
         for frame: ARFrame,
         trackingState: ARCamera.TrackingState
     ) {
-        var message = ""
-        isThumbnailImageHidden = true
+        isLoadingMap = false
 
         switch trackingState {
         case .normal:
             if document.isEmpty {
-                withAnimation { message = "Start drawing by tapping on the screen" }
+                sessionInfoLabel = "Start drawing by tapping on the screen"
             }
-
         case .limited(.relocalizing):
-            isThumbnailImageHidden = false
-            withAnimation { message = "Move your device to the location shown in the image." }
+            isLoadingMap = true
+            sessionInfoLabel = "Move your device to the location shown in the image."
         default:
-            message = ""
+            sessionInfoLabel = ""
         }
-
-        sessionInfoLabel = message
     }
 }

@@ -12,15 +12,20 @@ import SwiftData
 
 struct ARMainView: View {
     @State var customARView = CustomARView()
+
     @State var isBrushMenuPopover = false
+    // Screenshot
     @State var screenshotImage: UIImage?
     @State var showPreview = false
     @State var hidePreviewWorkItem: DispatchWorkItem?
+    // Loading
     @State var showLibrary = false
+    // Saving
     @State var showSaveSheet: Bool = false
     @State var mapName = ""
 
     @AppStorage("isFirstTime") var isFirstTime = true
+
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.verticalSizeClass) private var verticalSizeClass
     @Environment(\.modelContext) private var context
@@ -37,14 +42,18 @@ struct ARMainView: View {
                 ARViewContainer(customARView: customARView)
                     .edgesIgnoringSafeArea(.all)
 
-                if customARView.isThumbnailImageHidden {
-                    optionButton
-                        .zIndex(1)
-                    buttonView
-                } else {
+                if customARView.isLoadingMap {
                     resetButton
                     thumbnailImage
                         .zIndex(2)
+                } else if customARView.isSavingMap {
+                    resetButton
+                    saveButton
+                        .zIndex(1)
+                } else {
+                    optionButton
+                        .zIndex(1)
+                    buttonView
                 }
 
                 sessionInfo
@@ -52,7 +61,8 @@ struct ARMainView: View {
                     .zIndex(1)
 
             }
-            .animation(.default, value: customARView.isThumbnailImageHidden)
+            .animation(.default, value: customARView.isLoadingMap)
+            .animation(.default, value: customARView.isSavingMap)
             .fullScreenCover(isPresented: $showLibrary) {
                 LibrarySheet()
                     .environment(customARView)
@@ -62,10 +72,12 @@ struct ARMainView: View {
                 Button("Save") {
                     customARView.saveExperience(mapName: mapName, context: context)
                     mapName = ""
+                    customARView.isSavingMap = false
                 }
                 .disabled(mapName.isEmpty)
                 Button("Cancel", role: .cancel) {
                     mapName = ""
+                    customARView.isSavingMap = false
                 }
             }
         }
@@ -79,11 +91,13 @@ struct ARMainView: View {
             VStack {
                 Spacer()
                 Text(labelText)
+                    .multilineTextAlignment(.center)
                     .padding(5)
                     .background(.ultraThinMaterial)
                     .cornerRadius(8)
-                    .padding(.bottom, 70)
+                    .padding(.bottom, 90)
             }
+            .edgesIgnoringSafeArea(.bottom)
         }
     }
 
