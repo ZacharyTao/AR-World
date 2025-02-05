@@ -94,7 +94,9 @@ class CustomARView: ARView {
 
     func undoLastStroke() {
         guard let lastStroke = document.popLast() else { return }
-        lastStroke.anchor.removeFromParent()
+        // lastStroke.anchor.removeFromParent()
+        scene.removeAnchor(lastStroke.anchor)
+        session.remove(anchor: lastStroke.arAnchor)
     }
 
     func clearAllStrokes() {

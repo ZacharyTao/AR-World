@@ -44,8 +44,16 @@ class Stroke {
         self.arAnchor = persistedAnchor
         self.anchor = AnchorEntity(anchor: arAnchor)
         self.radius = strokeData.radius
-        self.points = strokeData.points.map { $0.simd }
         self.brushMaterial = strokeData.material
+
+        let anchorTransform = persistedAnchor.transform
+        let inverseAnchorTransform = simd_inverse(anchorTransform)
+
+        self.points = strokeData.points.map { savedPoint in
+            let worldPoint = SIMD4<Float>(savedPoint.x, savedPoint.y, savedPoint.z, 1.0)
+            let localPoint = inverseAnchorTransform * worldPoint
+            return SIMD3<Float>(localPoint.x, localPoint.y, localPoint.z)
+        }
 
         do {
             let entity = try generateStrokeEntity()
