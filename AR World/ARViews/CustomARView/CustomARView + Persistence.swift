@@ -12,8 +12,8 @@ import SwiftUI
 import SwiftData
 
 extension CustomARView {
-    func loadExperience(mapData: Data, strokeDatas: [StrokeData]) {
-        guard let worldMap = try? NSKeyedUnarchiver.unarchivedObject(ofClass: ARWorldMap.self, from: mapData) else {
+    func loadExperience(savedMap: SavedMap) {
+        guard let worldMap = try? NSKeyedUnarchiver.unarchivedObject(ofClass: ARWorldMap.self, from: savedMap.map) else {
             self.alertMessage = "Can't unarchive ARWorldMap from file data"
             return
         }
@@ -22,9 +22,16 @@ extension CustomARView {
         for savedAnchor in worldMap.anchors {
             if let savedAnchorName = savedAnchor.name,
                savedAnchorName.hasPrefix("stroke_"),
-               let strokeData = strokeDatas.first(where: { $0.anchorName == savedAnchorName }) {
+               let strokeData = savedMap.strokes.first(where: { $0.anchorName == savedAnchorName }) {
                 strokes.append(Stroke(strokeData: strokeData, persistedAnchor: savedAnchor))
             }
+        }
+
+        if let snapshotData = savedMap.snapshot,
+            let snapshot = UIImage(data: snapshotData) {
+            self.thumbnailImage = snapshot
+        } else {
+            print("No snapshot image in world map")
         }
 
         let configuration = self.defaultConfiguration

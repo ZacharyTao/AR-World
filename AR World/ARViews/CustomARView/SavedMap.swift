@@ -14,6 +14,7 @@ final class SavedMap {
     @Attribute(.externalStorage) var map: Data
     @Attribute(.externalStorage) var snapshot: Data?
     @Attribute(.externalStorage) var strokes: [StrokeData]
+    var dateCreated: Date = Date()
 
     init(name: String, map: Data, snapshot: Data?, strokes: [StrokeData]) {
         self.name = name

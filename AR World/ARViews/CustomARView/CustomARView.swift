@@ -16,6 +16,10 @@ class CustomARView: ARView {
     var isSaveButtonEnabled: Bool = false
     var alertMessage: String?
 
+    var isThumbnailImageHidden: Bool = true
+    var thumbnailImage: UIImage?
+    var sessionInfoLabel: String?
+
     @ObservationIgnored @AppStorage("selectedColor") var selectedColor: Color = .white
     @ObservationIgnored @AppStorage("selectedRadius") var selectedRadius: BrushRadius = .medium
     @ObservationIgnored @AppStorage("selectedBrushMaterial") var selectedBrushMaterial: BrushMaterial = .basic

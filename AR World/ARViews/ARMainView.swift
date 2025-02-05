@@ -32,44 +32,26 @@ struct ARMainView: View {
     var body: some View {
         if isFirstTime {
             welcomeSheet
-                .transition(.scale)
         } else {
             ZStack {
                 ARViewContainer(customARView: customARView)
                     .edgesIgnoringSafeArea(.all)
 
                 optionButton
-                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-                    .padding(.vertical, 5)
-                    .padding(.horizontal, 15)
                     .zIndex(1)
 
-                if isPortraitMode {
-                    // iPhone portrait
-                    VStack {
-                        Spacer()
-                        HStack {
-                            buttonView
-                        }
-                    }
-                    .padding(.horizontal, 50)
-                    .ignoresSafeArea(.keyboard, edges: .bottom)
-                } else {
-                    // iPhone landscape
-                    HStack {
-                        Spacer()
-                        VStack {
-                            buttonView
-                        }
-                    }
-                    .padding(.vertical, 25)
-                    .padding(.horizontal, 20)
-                    .ignoresSafeArea(.keyboard, edges: .bottom)
+                if customARView.isThumbnailImageHidden {
+                    buttonView
                 }
+
+                sessionInfo
 
                 screenShotPreview
                     .zIndex(1)
+                thumbnailImage
+                    .zIndex(2)
             }
+            .animation(.default, value: customARView.isThumbnailImageHidden)
             .fullScreenCover(isPresented: $showLibrary) {
                 LibrarySheet()
                     .environment(customARView)
@@ -89,66 +71,74 @@ struct ARMainView: View {
     }
 
     @ViewBuilder
-    var buttonView: some View {
-        undoButton
-        Spacer()
-        brushSelectionButton
-        Spacer()
-        colorPickerButton
-        Spacer()
-        cameraButton
-    }
-
-    var welcomeSheet: some View {
-        VStack {
-            Text("Welcome to AR World")
-                .font(.title)
-                .fontWeight(.bold)
-                .multilineTextAlignment(.center)
-
-            Text("Unleash your creativity in a 3D space!")
-                .font(.subheadline)
-                .foregroundColor(.gray)
-                .multilineTextAlignment(.center)
-
-            VStack(alignment: .leading, spacing: 15) {
-                FeatureItem(icon: "pencil", text: "Draw in 3D by tapping on screen")
-                FeatureItem(icon: "paintpalette", text: "Explore various brushes and materials")
-                FeatureItem(icon: "camera", text: "Capture and share your creations")
+    var sessionInfo: some View {
+        if let labelText = customARView.sessionInfoLabel,
+           !labelText.isEmpty
+        {
+            VStack {
+                Spacer()
+                Text(labelText)
+                    .padding(5)
+                    .background(.ultraThinMaterial)
+                    .cornerRadius(8)
+                    .padding(.bottom, 70)
             }
-            .padding(.horizontal, 10)
-            .padding(.vertical, 20)
-
-            Button {
-                withAnimation {
-                    isFirstTime = false
-                }
-            } label: {
-                Text("Get Started")
-                    .font(.headline)
-                    .foregroundColor(.white)
-                    .frame(maxWidth: .infinity)
-                    .padding(10)
-                    .background(Color.accentColor)
-                    .cornerRadius(10)
-            }
-            .padding(.top, 20)
         }
-        .padding()
     }
 
-    struct FeatureItem: View {
-        let icon: String
-        let text: String
-
-        var body: some View {
-            HStack {
-                Image(systemName: icon)
-                    .foregroundColor(.accentColor)
-                    .frame(width: 24, height: 24)
-                Text(text)
-                    .font(.subheadline)
+    @ViewBuilder
+    var thumbnailImage: some View {
+        if !customARView.isThumbnailImageHidden {
+            if let image = customARView.thumbnailImage {
+                Image(uiImage: image)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 150)
+                    .cornerRadius(20)
+                    .shadow(radius: 5)
+                    .frame(maxWidth: .infinity,
+                           maxHeight: .infinity,
+                           alignment: .topTrailing)
+                    .padding()
             }
+        }
+    }
+
+    @ViewBuilder
+    var buttonView: some View {
+        if isPortraitMode {
+            // iPhone portrait
+            VStack {
+                Spacer()
+                HStack {
+                    undoButton
+                    Spacer()
+                    brushSelectionButton
+                    Spacer()
+                    colorPickerButton
+                    Spacer()
+                    cameraButton
+                }
+            }
+            .padding(.horizontal, 50)
+            .ignoresSafeArea(.keyboard, edges: .bottom)
+        } else {
+            // iPhone landscape
+            HStack {
+                Spacer()
+                VStack {
+                    undoButton
+                    Spacer()
+                    brushSelectionButton
+                    Spacer()
+                    colorPickerButton
+                    Spacer()
+                    cameraButton
+                }
+            }
+            .padding(.vertical, 25)
+            .padding(.horizontal, 20)
+            .ignoresSafeArea(.keyboard, edges: .bottom)
         }
     }
 }

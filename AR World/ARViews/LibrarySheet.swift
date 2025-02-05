@@ -17,7 +17,7 @@ struct LibrarySheet: View {
     @State private var showingDeleteAlert = false
     @State private var itemToDelete: SavedMap?
     @State private var isEditing = false
-    @Query private var savedMaps: [SavedMap]
+    @Query(sort: \SavedMap.dateCreated, order: .reverse) private var savedMaps: [SavedMap]
 
     let columns = [GridItem(.flexible()), GridItem(.flexible())]
 
@@ -25,15 +25,15 @@ struct LibrarySheet: View {
         NavigationStack {
             ScrollView {
                 LazyVGrid(columns: columns) {
-                    ForEach(savedMaps) { map in
+                    ForEach(savedMaps) { savedMap in
                         VStack {
-                            displayMapImage(map: map)
-                            Text(map.name)
+                            displayMapImage(map: savedMap)
+                            Text(savedMap.name)
                         }
                         .padding(10)
                         .onTapGesture {
                             if !isEditing {
-                                customARView.loadExperience(mapData: map.map, strokeDatas: map.strokes)
+                                customARView.loadExperience(savedMap: savedMap)
                                 dismiss()
                             }
                         }

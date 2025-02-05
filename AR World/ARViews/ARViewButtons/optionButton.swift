@@ -42,5 +42,8 @@ extension ARMainView {
                 .padding(10)
                 .contentShape(Rectangle())
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+        .padding(.vertical, 5)
+        .padding(.horizontal, 15)
     }
 }
