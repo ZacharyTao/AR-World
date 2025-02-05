@@ -63,6 +63,7 @@ struct ARMainView: View {
             }
             .animation(.default, value: customARView.isLoadingMap)
             .animation(.default, value: customARView.isSavingMap)
+            .animation(.default, value: customARView.sessionInfoLabel)
             .fullScreenCover(isPresented: $showLibrary) {
                 LibrarySheet()
                     .environment(customARView)

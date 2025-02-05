@@ -37,7 +37,6 @@ extension CustomARView {
 
         configuration.initialWorldMap = worldMap
         self.session.run(configuration, options: [.resetTracking, .removeExistingAnchors])
-        
         clearAllStrokes()
 
         for stroke in strokes {

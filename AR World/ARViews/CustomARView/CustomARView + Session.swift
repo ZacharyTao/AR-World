@@ -47,17 +47,19 @@ extension CustomARView: ARSessionDelegate {
         trackingState: ARCamera.TrackingState
     ) {
         isLoadingMap = false
+        var message = ""
 
         switch trackingState {
         case .normal:
             if document.isEmpty {
-                sessionInfoLabel = "Start drawing by tapping on the screen"
+                message = "Start drawing by tapping on the screen"
             }
         case .limited(.relocalizing):
             isLoadingMap = true
-            sessionInfoLabel = "Move your device to the location shown in the image."
+            message = "Move your device to the location shown in the image."
         default:
-            sessionInfoLabel = ""
+            message = ""
         }
+        sessionInfoLabel = message
     }
 }
