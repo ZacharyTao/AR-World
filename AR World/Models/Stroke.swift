@@ -40,7 +40,7 @@ class Stroke {
 
         do {
             let entity = try generateStrokeEntity()
-            anchor.addChild(entity, preservingWorldTransform: true)
+            anchor.addChild(entity, preservingWorldTransform: false)
         } catch {
             print("Failed to generate new stroke entity")
         }

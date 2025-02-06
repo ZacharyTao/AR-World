@@ -46,6 +46,59 @@ extension CustomARView {
         }
     }
 
+    func loadStrokesOnCurrentMap(savedMap: SavedMap) {
+        guard let worldMap = try? NSKeyedUnarchiver.unarchivedObject(ofClass: ARWorldMap.self, from: savedMap.map) else {
+            self.alertMessage = "Can't unarchive ARWorldMap from file data"
+            return
+        }
+
+        // Find the center point of all anchors
+        var centerPoint = SIMD3<Float>(0, 0, 0)
+        var anchorCount = 0
+
+        for savedAnchor in worldMap.anchors {
+            if savedAnchor.name?.hasPrefix("stroke_") == true {
+                centerPoint += SIMD3<Float>(savedAnchor.transform.columns.3.x,
+                                          savedAnchor.transform.columns.3.y,
+                                          savedAnchor.transform.columns.3.z)
+                anchorCount += 1
+            }
+        }
+
+        guard anchorCount > 0 else { return }
+        centerPoint /= Float(anchorCount)
+
+        let screenSize = UIScreen.main.bounds.size
+        let screenCenter = CGPoint(x: screenSize.width / 2, y: screenSize.height / 2)
+        let targetPosition = getPosition(ofPoint: screenCenter, atDistanceFromCamera: 0.5, inView: self) ?? cameraTransform.translation
+
+        let translation = targetPosition - centerPoint
+
+        var strokes: [Stroke] = []
+        for savedAnchor in worldMap.anchors {
+            if let savedAnchorName = savedAnchor.name,
+               savedAnchorName.hasPrefix("stroke_"),
+               let strokeData = savedMap.strokes.first(where: { $0.anchorName == savedAnchorName }) {
+                // Create new transform with translated position
+                var newTransform = savedAnchor.transform
+                let currentPos = SIMD3<Float>(newTransform.columns.3.x,
+                                            newTransform.columns.3.y,
+                                            newTransform.columns.3.z)
+                let newPos = currentPos + translation
+                newTransform.columns.3 = SIMD4<Float>(newPos.x, newPos.y, newPos.z, 1.0)
+
+                let newAnchor = ARAnchor(transform: newTransform)
+                strokes.append(Stroke(strokeData: strokeData, persistedAnchor: newAnchor))
+            }
+        }
+
+        for stroke in strokes {
+            session.add(anchor: stroke.arAnchor)
+            scene.addAnchor(stroke.anchor)
+            document.append(stroke)
+        }
+    }
+
     func saveExperience(mapName: String, context: ModelContext) {
         self.session.getCurrentWorldMap { worldMap, _ in
             guard let map = worldMap else {

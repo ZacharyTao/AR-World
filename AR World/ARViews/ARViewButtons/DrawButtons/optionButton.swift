@@ -33,6 +33,14 @@ extension ARMainView {
                     Label("Load Drawing", systemImage: "square.and.arrow.up")
                 }
             }
+
+            Section {
+                Button {
+
+                } label: {
+                    Label("Settings", systemImage: "gear")
+                }
+            }
         } label: {
             Image(systemName: "ellipsis")
                 .resizable()
@@ -44,7 +52,7 @@ extension ARMainView {
                 .contentShape(Rectangle())
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-        .padding(.vertical, 5)
-        .padding(.horizontal, 15)
+        .padding(.vertical, isPortraitMode ? 5 : 20)
+        .padding(.horizontal, isPortraitMode ? 15: 30)
     }
 }

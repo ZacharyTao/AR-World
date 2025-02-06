@@ -17,6 +17,8 @@ struct LibrarySheet: View {
     @State private var showingDeleteAlert = false
     @State private var itemToDelete: SavedMap?
     @State private var isEditing = false
+    @State private var showingExperienceOptions = false
+    @State private var selectedMap: SavedMap?
     @Query(sort: \SavedMap.dateCreated, order: .reverse) private var savedMaps: [SavedMap]
 
     let columns = [GridItem(.flexible()), GridItem(.flexible())]
@@ -33,8 +35,10 @@ struct LibrarySheet: View {
                         .padding(10)
                         .onTapGesture {
                             if !isEditing {
-                                customARView.loadExperience(savedMap: savedMap)
-                                dismiss()
+//                                customARView.loadExperience(savedMap: savedMap)
+//                                dismiss()
+                                selectedMap = savedMap
+                                showingExperienceOptions = true
                             }
                         }
                     }
@@ -68,6 +72,22 @@ struct LibrarySheet: View {
                 Button("Cancel", role: .cancel) {}
             } message: { _ in
                 Text("Are you sure you want to delete this map?")
+            }
+            .confirmationDialog("How do you want to load this drawing?", isPresented: $showingExperienceOptions, titleVisibility: .visible) {
+                Button("Use Saved Position") {
+                    if let map = selectedMap {
+                        customARView.loadExperience(savedMap: map)
+                    }
+                    dismiss()
+                }
+                Button("Use My Current Position") {
+                    if let map = selectedMap {
+                        customARView.loadStrokesOnCurrentMap(savedMap: map)
+                    }
+                    customARView.resumeSession()
+                    dismiss()
+                }
+                Button("Cancel", role: .cancel) {}
             }
         }
         .onAppear {
