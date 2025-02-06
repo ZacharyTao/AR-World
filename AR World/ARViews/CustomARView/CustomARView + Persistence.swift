@@ -44,6 +44,7 @@ extension CustomARView {
             scene.addAnchor(stroke.anchor)
             document.append(stroke)
         }
+        isRelocalizingMap = true
     }
 
     func loadStrokesOnCurrentMap(savedMap: SavedMap) {

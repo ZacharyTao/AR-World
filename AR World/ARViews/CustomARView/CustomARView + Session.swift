@@ -54,7 +54,7 @@ extension CustomARView: ARSessionDelegate {
             if document.isEmpty {
                 message = "Start drawing by tapping on the screen"
             }
-        case .limited(.relocalizing):
+        case .limited(.relocalizing) where self.isRelocalizingMap:
             isLoadingMap = true
             message = "Move your device to the location shown in the image."
         default:

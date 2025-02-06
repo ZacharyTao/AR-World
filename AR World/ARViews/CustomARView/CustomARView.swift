@@ -18,6 +18,7 @@ class CustomARView: ARView {
 
     var isLoadingMap: Bool = false
     var isSavingMap: Bool = false
+    var isRelocalizingMap = false
     var thumbnailImage: UIImage?
     var sessionInfoLabel: String?
 
@@ -123,5 +124,6 @@ extension CustomARView {
 
     func resetSession() {
         self.session.run(defaultConfiguration, options: [.resetTracking, .removeExistingAnchors])
+        self.isRelocalizingMap = false
     }
 }
