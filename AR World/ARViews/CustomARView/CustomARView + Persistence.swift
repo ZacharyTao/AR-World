@@ -44,7 +44,6 @@ extension CustomARView {
             scene.addAnchor(stroke.anchor)
             document.append(stroke)
         }
-        isRelocalizingMap = true
     }
 
     func loadStrokesOnCurrentMap(savedMap: SavedMap) {
@@ -101,6 +100,10 @@ extension CustomARView {
     }
 
     func saveExperience(mapName: String, context: ModelContext) {
+        for stroke in document {
+            session.add(anchor: stroke.arAnchor)
+        }
+
         self.session.getCurrentWorldMap { worldMap, _ in
             guard let map = worldMap else {
                 self.alertMessage = "Unable to get current world map, please try again later."

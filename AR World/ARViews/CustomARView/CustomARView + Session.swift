@@ -55,7 +55,7 @@ extension CustomARView: ARSessionDelegate {
                 message = "Start drawing by tapping on the screen"
             }
             isDrawingDisabled = false
-        case .limited(.relocalizing) where self.isRelocalizingMap:
+        case .limited(.relocalizing):
             isLoadingMap = true
             message = "Move your device to the location shown in the image."
             isDrawingDisabled = true

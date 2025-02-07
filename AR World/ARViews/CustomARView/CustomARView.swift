@@ -18,7 +18,6 @@ class CustomARView: ARView {
 
     var isLoadingMap = false
     var isSavingMap = false
-    var isRelocalizingMap = false
     var isDrawingDisabled = false
 
     var thumbnailImage: UIImage?
@@ -41,7 +40,8 @@ class CustomARView: ARView {
     }
 
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        if isLoadingMap || isSavingMap || isRelocalizingMap || isDrawingDisabled {
+        if isLoadingMap || isSavingMap || isDrawingDisabled {
+            print("Touch disabled because \(isLoadingMap ? "loading map" : isSavingMap ? "saving map" : "drawing disabled")")
             return
         }
         guard let touch = touches.first else { return }
@@ -51,7 +51,7 @@ class CustomARView: ARView {
     }
 
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
-        if isLoadingMap || isSavingMap || isRelocalizingMap || isDrawingDisabled {
+        if isLoadingMap || isSavingMap || isDrawingDisabled {
             return
         }
         guard let touch = touches.first else { return }
@@ -60,7 +60,7 @@ class CustomARView: ARView {
     }
 
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-        if isLoadingMap || isSavingMap || isRelocalizingMap || isDrawingDisabled {
+        if isLoadingMap || isSavingMap || isDrawingDisabled {
             return
         }
         finishStroke()
@@ -68,7 +68,7 @@ class CustomARView: ARView {
     }
 
     override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
-        if isLoadingMap || isSavingMap || isRelocalizingMap || isDrawingDisabled {
+        if isLoadingMap || isSavingMap || isDrawingDisabled {
             return
         }
         finishStroke()
@@ -79,13 +79,13 @@ class CustomARView: ARView {
         guard let targetPosition = getPosition(ofPoint: location, atDistanceFromCamera: 0.2, inView: self)
         else { return }
         previousPosition = targetPosition
-        currentStroke = Stroke(color: UIColor(selectedColor),
+        let newStroke = Stroke(color: UIColor(selectedColor),
                                anchorPosition: targetPosition,
                                radius: selectedRadius.getValue(),
                                material: selectedBrushMaterial)
-        currentStroke?.updateStroke(at: targetPosition)
-        session.add(anchor: currentStroke!.arAnchor)
-        scene.addAnchor(currentStroke!.anchor)
+        newStroke.updateStroke(at: targetPosition)
+        scene.addAnchor(newStroke.anchor)
+        currentStroke = newStroke
     }
 
     private func updateStroke(at location: CGPoint) {
@@ -138,6 +138,5 @@ extension CustomARView {
 
     func resetSession() {
         self.session.run(defaultConfiguration, options: [.resetTracking, .removeExistingAnchors])
-        self.isRelocalizingMap = false
     }
 }
