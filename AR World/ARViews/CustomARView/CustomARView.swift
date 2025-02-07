@@ -16,9 +16,11 @@ class CustomARView: ARView {
     var isSaveButtonEnabled: Bool = false
     var alertMessage: String?
 
-    var isLoadingMap: Bool = false
-    var isSavingMap: Bool = false
+    var isLoadingMap = false
+    var isSavingMap = false
     var isRelocalizingMap = false
+    var isDrawingDisabled = false
+
     var thumbnailImage: UIImage?
     var sessionInfoLabel: String?
 
@@ -39,6 +41,9 @@ class CustomARView: ARView {
     }
 
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        if isLoadingMap || isSavingMap || isRelocalizingMap || isDrawingDisabled {
+            return
+        }
         guard let touch = touches.first else { return }
         let location = touch.location(in: self)
         startNewStroke(at: location)
@@ -46,17 +51,26 @@ class CustomARView: ARView {
     }
 
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
+        if isLoadingMap || isSavingMap || isRelocalizingMap || isDrawingDisabled {
+            return
+        }
         guard let touch = touches.first else { return }
         let location = touch.location(in: self)
         updateStroke(at: location)
     }
 
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        if isLoadingMap || isSavingMap || isRelocalizingMap || isDrawingDisabled {
+            return
+        }
         finishStroke()
         UIImpactFeedbackGenerator(style: .light).impactOccurred()
     }
 
     override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
+        if isLoadingMap || isSavingMap || isRelocalizingMap || isDrawingDisabled {
+            return
+        }
         finishStroke()
         UIImpactFeedbackGenerator(style: .light).impactOccurred()
     }
