@@ -85,6 +85,7 @@ class CustomARView: ARView {
                                material: selectedBrushMaterial)
         newStroke.updateStroke(at: targetPosition)
         scene.addAnchor(newStroke.anchor)
+        session.add(anchor: newStroke.arAnchor)
         currentStroke = newStroke
     }
 
