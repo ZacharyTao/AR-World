@@ -23,7 +23,7 @@ extension ARMainView {
         }
         .disabled(!customARView.isSaveButtonEnabled)
         .frame(maxHeight: .infinity, alignment: .bottom)
-        .padding(.bottom, 40)
+        .padding(.bottom, isIPhone() ? 40: 70)
         .edgesIgnoringSafeArea(.bottom)
     }
 }

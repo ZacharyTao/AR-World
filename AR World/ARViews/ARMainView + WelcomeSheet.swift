@@ -42,6 +42,7 @@ extension ARMainView {
                     .cornerRadius(10)
             }
             .padding(.top, 20)
+            .padding(.horizontal, 30)
         }
         .padding()
         .transition(.scale)

@@ -24,7 +24,7 @@ class Stroke {
         print("New Stroke ID: stroke_\(strokeID)")
 
         self.arAnchor = ARAnchor(name: "stroke_\(strokeID)", transform: transform)
-        self.anchor = AnchorEntity(world: anchorPosition)
+        self.anchor = AnchorEntity(anchor: arAnchor)
         self.radius = radius
         self.points = []
         self.brushMaterial = material

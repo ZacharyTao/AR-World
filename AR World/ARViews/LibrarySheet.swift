@@ -41,6 +41,22 @@ struct LibrarySheet: View {
                                 showingExperienceOptions = true
                             }
                         }
+                        .confirmationDialog("How do you want to load this drawing?", isPresented: $showingExperienceOptions, titleVisibility: .visible) {
+                            Button("Use Saved Position") {
+                                if let map = selectedMap {
+                                    customARView.loadExperience(savedMap: map)
+                                }
+                                dismiss()
+                            }
+                            Button("Use My Current Position") {
+                                if let map = selectedMap {
+                                    customARView.loadStrokesOnCurrentMap(savedMap: map)
+                                }
+                                customARView.resumeSession()
+                                dismiss()
+                            }
+                            Button("Cancel", role: .cancel) {}
+                        }
                     }
                 }
                 .padding()
@@ -72,22 +88,6 @@ struct LibrarySheet: View {
                 Button("Cancel", role: .cancel) {}
             } message: { _ in
                 Text("Are you sure you want to delete this map?")
-            }
-            .confirmationDialog("How do you want to load this drawing?", isPresented: $showingExperienceOptions, titleVisibility: .visible) {
-                Button("Use Saved Position") {
-                    if let map = selectedMap {
-                        customARView.loadExperience(savedMap: map)
-                    }
-                    dismiss()
-                }
-                Button("Use My Current Position") {
-                    if let map = selectedMap {
-                        customARView.loadStrokesOnCurrentMap(savedMap: map)
-                    }
-                    customARView.resumeSession()
-                    dismiss()
-                }
-                Button("Cancel", role: .cancel) {}
             }
         }
         .onAppear {

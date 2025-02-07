@@ -27,7 +27,7 @@ extension ARMainView {
                 .clipShape(Capsule())
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-        .padding()
+        .padding(isIPhone() ? 10: 30)
 
     }
 }

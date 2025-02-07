@@ -96,7 +96,7 @@ struct ARMainView: View {
                     .padding(5)
                     .background(.ultraThinMaterial)
                     .cornerRadius(8)
-                    .padding(.bottom, 90)
+                    .padding(.bottom, isIPhone() ? 90: 150)
             }
             .edgesIgnoringSafeArea(.bottom)
         }
@@ -108,7 +108,7 @@ struct ARMainView: View {
             Image(uiImage: image)
                 .resizable()
                 .scaledToFit()
-                .frame(width: 120)
+                .frame(width: isIPhone() ? 120: 350)
                 .cornerRadius(20)
                 .shadow(radius: 5)
                 .frame(maxWidth: .infinity,
