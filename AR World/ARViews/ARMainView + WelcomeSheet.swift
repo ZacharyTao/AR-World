@@ -10,23 +10,30 @@ import SwiftUI
 extension ARMainView {
     var welcomeSheet: some View {
         VStack {
+            Spacer()
+
             Text("Welcome to AR World")
                 .font(.title)
                 .fontWeight(.bold)
                 .multilineTextAlignment(.center)
+                .padding(.vertical)
 
             Text("Unleash your creativity in a 3D space!")
                 .font(.subheadline)
                 .foregroundColor(.gray)
                 .multilineTextAlignment(.center)
 
-            VStack(alignment: .leading, spacing: 15) {
+            Spacer()
+
+            VStack(alignment: .leading, spacing: isIPhone() ? 15 : 50) {
                 FeatureItem(icon: "pencil", text: "Draw in 3D by tapping on screen")
                 FeatureItem(icon: "paintpalette", text: "Explore various brushes and materials")
                 FeatureItem(icon: "camera", text: "Capture and share your creations")
             }
             .padding(.horizontal, 10)
             .padding(.vertical, 20)
+
+            Spacer()
 
             Button {
                 withAnimation {
@@ -41,11 +48,12 @@ extension ARMainView {
                     .background(Color.accentColor)
                     .cornerRadius(10)
             }
+            .frame(width: isIPhone() ? 150 : 400)
             .padding(.top, 20)
-            .padding(.horizontal, 30)
+            .padding(.horizontal, isIPhone() ? 30 : 150)
+            Spacer()
         }
         .padding()
-        .transition(.scale)
     }
 
     struct FeatureItem: View {

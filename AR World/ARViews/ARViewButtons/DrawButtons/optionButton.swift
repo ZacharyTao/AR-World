@@ -33,14 +33,6 @@ extension ARMainView {
                     Label("Load Drawing", systemImage: "square.and.arrow.up")
                 }
             }
-
-            Section {
-                Button {
-
-                } label: {
-                    Label("Settings", systemImage: "gear")
-                }
-            }
         } label: {
             Image(systemName: "ellipsis")
                 .resizable()

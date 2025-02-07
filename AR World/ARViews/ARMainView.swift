@@ -37,6 +37,7 @@ struct ARMainView: View {
     var body: some View {
         if isFirstTime {
             welcomeSheet
+                .transition(.scale)
         } else {
             ZStack {
                 ARViewContainer(customARView: customARView)
