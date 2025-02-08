@@ -76,7 +76,7 @@ class CustomARView: ARView {
     }
 
     private func startNewStroke(at location: CGPoint) {
-        guard let targetPosition = getPosition(ofPoint: location, atDistanceFromCamera: 0.2, inView: self)
+        guard let targetPosition = getPosition(ofPoint: location, atDistanceFromCamera: 0.3, inView: self)
         else { return }
         previousPosition = targetPosition
         let newStroke = Stroke(color: UIColor(selectedColor),
@@ -92,7 +92,7 @@ class CustomARView: ARView {
     private func updateStroke(at location: CGPoint) {
         guard let currentStroke = currentStroke,
               let previousPosition = previousPosition,
-              let targetPosition = getPosition(ofPoint: location, atDistanceFromCamera: 0.2, inView: self)
+              let targetPosition = getPosition(ofPoint: location, atDistanceFromCamera: 0.3, inView: self)
         else { return }
 
         let dist = distance(targetPosition, previousPosition)

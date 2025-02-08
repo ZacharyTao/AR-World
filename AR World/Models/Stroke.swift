@@ -94,8 +94,10 @@ class Stroke {
     }
 
     func generateTubeMesh() throws -> MeshResource {
-        let segments = 8
-        guard points.count >= 3 else { return try MeshResource.generate(from: []) }
+        let segments = 16
+        guard points.count >= 3 else {
+            return try MeshResource.generate(from: [])
+        }
         var vertices: [SIMD3<Float>] = []
         var normals: [SIMD3<Float>] = []
         var uvs: [SIMD2<Float>] = []
@@ -104,26 +106,33 @@ class Stroke {
         let pointCount = points.count
 
         for (index, point) in points.enumerated() {
-            let nextPoint: SIMD3<Float>
-            if index < pointCount - 1 {
-                nextPoint = points[index + 1]
-            } else if index > 0 {
-                nextPoint = point + (point - points[index - 1])
+            // Compute a smoothed tangent for the current point.
+            let tangent: SIMD3<Float>
+            if index > 0 && index < pointCount - 1 {
+                let prevTangent = normalize(point - points[index - 1])
+                let nextTangent = normalize(points[index + 1] - point)
+                tangent = normalize(prevTangent + nextTangent)
+            } else if index < pointCount - 1 {
+                tangent = normalize(points[index + 1] - point)
             } else {
-                nextPoint = point
+                tangent = normalize(point - points[index - 1])
             }
-            let direction = normalize(nextPoint - point)
-            let up = SIMD3<Float>(0, 1, 0)
-            let right = normalize(cross(direction, up))
-            let realUp = normalize(cross(right, direction))
 
+            // Use an alternate up vector if the tangent is nearly vertical.
+            let referenceUp: SIMD3<Float> = abs(dot(tangent, SIMD3<Float>(0, 1, 0))) > 0.99
+                ? SIMD3<Float>(1, 0, 0)
+                : SIMD3<Float>(0, 1, 0)
+            let right = normalize(cross(tangent, referenceUp))
+            let localUp = normalize(cross(right, tangent))
+
+            // Generate the circular cross-section.
             for j in 0..<segments {
                 let angle = Float(j) / Float(segments) * 2 * .pi
-                let x = cos(angle)
-                let y = sin(angle)
-                let circlePoint = point + radius * (x * right + y * realUp)
-                let normal = normalize(circlePoint - point)
-                let uv = SIMD2<Float>(Float(index) / Float(pointCount - 1), Float(j) / Float(segments))
+                let offset = radius * (cos(angle) * right + sin(angle) * localUp)
+                let circlePoint = point + offset
+                let normal = normalize(offset) // Since offset is from the center.
+                let uv = SIMD2<Float>(Float(index) / Float(pointCount - 1),
+                                      Float(j) / Float(segments))
 
                 vertices.append(circlePoint)
                 normals.append(normal)
@@ -131,20 +140,12 @@ class Stroke {
             }
         }
 
-        guard !vertices.isEmpty else {
-            return try MeshResource.generate(from: [])
-        }
-
+        // Build indices connecting each ring.
         for i in 0..<pointCount - 1 {
             for j in 0..<segments {
                 let nextJ = (j + 1) % segments
                 let currentRow = i * segments
                 let nextRow = (i + 1) * segments
-
-                guard currentRow + nextJ < vertices.count,
-                      nextRow + nextJ < vertices.count else {
-                    continue
-                }
 
                 indices.append(contentsOf: [
                     UInt32(currentRow + j), UInt32(nextRow + j), UInt32(nextRow + nextJ),
@@ -161,6 +162,7 @@ class Stroke {
 
         return try MeshResource.generate(from: [descriptor])
     }
+
 }
 
 extension Stroke {
