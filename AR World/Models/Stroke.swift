@@ -15,6 +15,7 @@ class Stroke {
     let radius: Float
     var points: [SIMD3<Float>]
     var brushMaterial: BrushMaterial
+    var currentEntity: ModelEntity?
 
     init(color: UIColor, anchorPosition: SIMD3<Float>, radius: Float, material: BrushMaterial) {
         self.color = color
@@ -40,7 +41,8 @@ class Stroke {
 
         do {
             let entity = try generateStrokeEntity()
-            anchor.addChild(entity, preservingWorldTransform: false)
+            anchor.addChild(entity)
+            currentEntity = entity
         } catch {
             print("Failed to generate new stroke entity")
         }
@@ -54,9 +56,12 @@ class Stroke {
         let localPoint = SIMD3<Float>(localPoint4.x, localPoint4.y, localPoint4.z)
         do {
             points.append(localPoint)
-            anchor.children.removeAll()
+            if let currentEntity {
+                anchor.removeChild(currentEntity)
+            }
             let entity = try generateStrokeEntity()
             anchor.addChild(entity)
+            currentEntity = entity
         } catch {
             print("Failed to generate mesh: \(error.localizedDescription)")
             return
