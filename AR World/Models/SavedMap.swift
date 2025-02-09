@@ -10,6 +10,7 @@ import SwiftUI
 
 @Model
 final class SavedMap {
+    @Attribute(.unique) var id = UUID()
     var name: String
     @Attribute(.externalStorage) var map: Data
     @Attribute(.externalStorage) var snapshot: Data?
@@ -23,4 +24,3 @@ final class SavedMap {
         self.strokes = strokes
     }
 }
-

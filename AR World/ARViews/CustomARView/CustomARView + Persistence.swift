@@ -1,10 +1,3 @@
-//
-//  CustomARView + Persistence.swift
-//  AR World
-//
-//  Created by Zachary Tao on 1/29/25.
-//
-
 import Foundation
 import RealityKit
 import ARKit
@@ -120,7 +113,7 @@ extension CustomARView {
                     context.insert(SavedMap(name: mapName, map: mapData, snapshot: imageData, strokes: strokeData))
                     try context.save()
                 } catch {
-                    fatalError("Can't save map: \(error.localizedDescription)")
+                    print("Can't save map: \(error.localizedDescription)")
                 }
             }
         }

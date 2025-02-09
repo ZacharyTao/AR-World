@@ -72,15 +72,29 @@ struct ARMainView: View {
             .alert("Save map", isPresented: $showSaveSheet) {
                 TextField("Enter map name", text: $mapName)
                 Button("Save") {
+                    customARView.isSavingMap = false
                     customARView.saveExperience(mapName: mapName, context: context)
                     mapName = ""
-                    customARView.isSavingMap = false
                 }
                 .disabled(mapName.isEmpty)
                 Button("Cancel", role: .cancel) {
                     mapName = ""
                     customARView.isSavingMap = false
                 }
+            }
+            .alert(isPresented: Binding<Bool>(
+                get: { customARView.alertMessage != nil },
+                set: { newValue in
+                    if !newValue {
+                        customARView.alertMessage = nil
+                    }
+                }
+            )) {
+                Alert(
+                    title: Text("Alert"),
+                    message: Text(customARView.alertMessage ?? ""),
+                    dismissButton: .default(Text("OK"))
+                )
             }
         }
     }
