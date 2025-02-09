@@ -12,6 +12,7 @@ struct ARWorldApp: App {
     var body: some Scene {
         WindowGroup {
             ARMainView()
+                .preferredColorScheme(.light)
         }
         .modelContainer(for: SavedMap.self)
     }

@@ -36,7 +36,7 @@ struct ARMainView: View {
 
     var body: some View {
         if isFirstTime {
-            welcomeSheet
+            WelcomeOnBoardView(isFirstTime: $isFirstTime)
                 .transition(.scale)
         } else {
             ZStack {
