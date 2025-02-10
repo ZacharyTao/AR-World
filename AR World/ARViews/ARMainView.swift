@@ -82,7 +82,7 @@ struct ARMainView: View {
                     customARView.isSavingMap = false
                 }
             }
-            .alert(isPresented: Binding<Bool>(
+            .alert(Text(customARView.alertMessage ?? ""), isPresented: Binding<Bool>(
                 get: { customARView.alertMessage != nil },
                 set: { newValue in
                     if !newValue {
@@ -90,11 +90,7 @@ struct ARMainView: View {
                     }
                 }
             )) {
-                Alert(
-                    title: Text("Alert"),
-                    message: Text(customARView.alertMessage ?? ""),
-                    dismissButton: .default(Text("OK"))
-                )
+                Button("OK", role: .cancel) {}
             }
         }
     }

@@ -60,7 +60,7 @@ extension CustomARView: ARSessionDelegate {
             message = "Move your device to the location shown in the image."
             isDrawingDisabled = true
         default:
-            message = ""
+            message = "Move around to map the environment."
             isDrawingDisabled = true
         }
         sessionInfoLabel = message
