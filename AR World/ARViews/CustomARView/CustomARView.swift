@@ -96,12 +96,12 @@ class CustomARView: ARView {
         else { return }
 
         let dist = distance(targetPosition, previousPosition)
-        let threshold = Float(0.001)
+        let threshold = Float(0.0015)
 
         // print("Distance: \(dist), Threshold: \(threshold), \(dist > threshold ? "✅" : "🟥")")
 
         if dist > threshold {
-            currentStroke.updateStroke(at: targetPosition)
+            currentStroke.updateStroke(at: (targetPosition + previousPosition) / 2)
             self.previousPosition = targetPosition
         }
     }

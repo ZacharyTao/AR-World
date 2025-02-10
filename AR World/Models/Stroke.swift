@@ -95,53 +95,56 @@ class Stroke {
 
     func generateTubeMesh() throws -> MeshResource {
         let segments = 16
-        guard points.count >= 3 else {
+
+        guard points.count >= 2 else {
             return try MeshResource.generate(from: [])
         }
+
         var vertices: [SIMD3<Float>] = []
         var normals: [SIMD3<Float>] = []
         var uvs: [SIMD2<Float>] = []
         var indices: [UInt32] = []
 
-        let pointCount = points.count
+        // --- Setup Initial Frame ---
+        let firstPoint = points[0]
+        let secondPoint = points[1]
+        var T = normalize(secondPoint - firstPoint)
 
-        for (index, point) in points.enumerated() {
-            // Compute a smoothed tangent for the current point.
-            let tangent: SIMD3<Float>
-            if index > 0 && index < pointCount - 1 {
-                let prevTangent = normalize(point - points[index - 1])
-                let nextTangent = normalize(points[index + 1] - point)
-                tangent = normalize(prevTangent + nextTangent)
-            } else if index < pointCount - 1 {
-                tangent = normalize(points[index + 1] - point)
-            } else {
-                tangent = normalize(point - points[index - 1])
+        // Choose a reference up vector. If T is nearly vertical, use (1,0,0) instead.
+        let referenceUp: SIMD3<Float> = abs(dot(T, SIMD3<Float>(0, 1, 0))) > 0.99 ? SIMD3<Float>(1, 0, 0) : SIMD3<Float>(0, 1, 0)
+
+        // Compute two perpendicular vectors that form the initial plane for the cross-section.
+        var frameX = normalize(cross(T, referenceUp))
+        var frameY = normalize(cross(frameX, T))
+
+        for i in 0..<points.count {
+            let point = points[i]
+            if i > 0 {
+                let newT = normalize(point - points[i - 1])
+                let dotProd = dot(T, newT)
+                if dotProd < 0.9999 {
+                    let rotationAxis = normalize(cross(T, newT))
+                    let angle = acos(clamp(dot(T, newT), -1, 1))
+                    frameX = rotate(frameX, angle: angle, axis: rotationAxis)
+                    frameY = rotate(frameY, angle: angle, axis: rotationAxis)
+                }
+                T = newT
             }
 
-            // Use an alternate up vector if the tangent is nearly vertical.
-            let referenceUp: SIMD3<Float> = abs(dot(tangent, SIMD3<Float>(0, 1, 0))) > 0.99
-                ? SIMD3<Float>(1, 0, 0)
-                : SIMD3<Float>(0, 1, 0)
-            let right = normalize(cross(tangent, referenceUp))
-            let localUp = normalize(cross(right, tangent))
-
-            // Generate the circular cross-section.
+            // For each point, generate a circle (ring) in the plane defined by frameX and frameY.
             for j in 0..<segments {
-                let angle = Float(j) / Float(segments) * 2 * .pi
-                let offset = radius * (cos(angle) * right + sin(angle) * localUp)
+                let theta = (Float(j) / Float(segments)) * 2 * Float.pi
+                let offset = radius * (cos(theta) * frameX + sin(theta) * frameY)
                 let circlePoint = point + offset
-                let normal = normalize(offset) // Since offset is from the center.
-                let uv = SIMD2<Float>(Float(index) / Float(pointCount - 1),
-                                      Float(j) / Float(segments))
-
                 vertices.append(circlePoint)
-                normals.append(normal)
+                normals.append(normalize(offset))
+                let uv = SIMD2<Float>(Float(i) / Float(points.count - 1),
+                                      Float(j) / Float(segments))
                 uvs.append(uv)
             }
         }
 
-        // Build indices connecting each ring.
-        for i in 0..<pointCount - 1 {
+        for i in 0..<points.count - 1 {
             for j in 0..<segments {
                 let nextJ = (j + 1) % segments
                 let currentRow = i * segments
@@ -166,7 +169,6 @@ class Stroke {
 }
 
 extension Stroke {
-    /// Converts a Stroke into a codable representation.
     func toStrokeData() -> StrokeData {
         return StrokeData(
             color: ColorData(self.color),

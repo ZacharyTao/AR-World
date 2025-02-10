@@ -92,3 +92,17 @@ struct Vector3: Codable {
         return SIMD3<Float>(x, y, z)
     }
 }
+
+/// Clamps a Float value between a minimum and maximum.
+func clamp(_ value: Float, _ minValue: Float, _ maxValue: Float) -> Float {
+    return Swift.max(minValue, Swift.min(value, maxValue))
+}
+
+/// Rotates a vector around an axis by the given angle using Rodrigues' rotation formula.
+func rotate(_ vector: SIMD3<Float>, angle: Float, axis: SIMD3<Float>) -> SIMD3<Float> {
+    let cosAngle = cos(angle)
+    let sinAngle = sin(angle)
+    return vector * cosAngle +
+           cross(axis, vector) * sinAngle +
+           axis * dot(axis, vector) * (1 - cosAngle)
+}
