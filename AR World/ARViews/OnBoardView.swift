@@ -149,7 +149,7 @@ struct OnBoardView: View {
                 .resizable()
                 .scaledToFit()
                 .frame(width: isIPhone() ? 150 : 200)
-                .foregroundStyle(.accent)
+                .foregroundStyle(Color.accentColor)
                 .shadow(color: Color.accentColor.opacity(0.4), radius: 2)
                 .opacity(animate ? 1 : 0)
                 .offset(y: animate ? 0 : -60)
