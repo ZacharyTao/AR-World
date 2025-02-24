@@ -28,7 +28,7 @@ An AR drawing application built with **SwiftUI**, **RealityKit**, **ARKit**, and
 </p>
 
 
-### Main view screenshots
+## Main view screenshots
 
 | Materials Options | Width Options | People Occlusion | Snapshot | World Map Saving&Loading
 |:-------------------:|:-------------------:|:-------------------:|:-------------------:|:-------------------:|
